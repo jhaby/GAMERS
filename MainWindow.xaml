@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAMERS"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Guardian Angel Medical Emergency Response System" Height="450" Width="800" Icon="dorc.jpg" WindowState="Maximized">
+    <Grid Margin="0,0,0,-6">
 
     </Grid>
 </Window>

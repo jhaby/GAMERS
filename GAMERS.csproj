@@ -6,4 +6,12 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="dorc.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="dorc.jpg" />
+  </ItemGroup>
+
 </Project>
