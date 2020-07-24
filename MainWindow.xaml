@@ -1,0 +1,63 @@
+﻿<Window x:Class="GAMERS_TECH.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GAMERS_TECH"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+     TextElement.FontWeight="Regular"
+     TextElement.FontSize="13"
+     TextOptions.TextFormattingMode="Ideal"
+     TextOptions.TextRenderingMode="Auto"
+     FontFamily="{DynamicResource MaterialDesignFont}"
+        mc:Ignorable="d" Height="600" Width="350" ResizeMode="NoResize" Background="{x:Null}" WindowStyle="None" Topmost="True" WindowStartupLocation="CenterScreen" Foreground="Black" AllowsTransparency="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <StackPanel Margin="25,25,25,85" Grid.Row="1">
+            <Border Margin="10,0,10,0" Background="#FF270461"  Height="177" Width="275">
+                <StackPanel >
+                    <Grid Grid.RowSpan="1" Background="#FF12012E">
+                        <materialDesign:PackIcon Kind="Close" Margin="0,5,10,0" Foreground="#FFFFFDFD" x:Name="close" HorizontalAlignment="Right" MouseLeftButtonDown="CloseWindow"  />
+                        <materialDesign:PackIcon Kind="WindowMinimize" Foreground="White" Margin="0,5,40,0" HorizontalAlignment="Right" MouseLeftButtonDown="Minimise" />
+                    </Grid>
+                    <Image Source="pack://siteoforigin:,,,/Resources/dorc.png" Width="184" Height="146"/>
+                </StackPanel>
+            </Border>
+            <Border Background="White" CornerRadius="5" Height="253" materialDesign:ShadowAssist.ShadowDepth="Depth4" BorderBrush="#FF959595" BorderThickness="2,2,2,2">
+                <StackPanel Margin="20 5 20 20">
+                    <TextBlock Text="Login" TextAlignment="Center" FontSize="20" FontWeight="Bold" />
+                    <ComboBox x:Name="Username" Margin="25,25,25,5" Style="{DynamicResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="Select user">
+                        <ComboBoxItem Content="Attending One"/>
+                        <ComboBoxItem Content="Attending Two"/>
+                        <ComboBoxItem Content="Attending Three"/>
+                    </ComboBox>
+                    <PasswordBox  x:Name="Password"
+  materialDesign:HintAssist.Hint="Password"
+  materialDesign:HintAssist.Foreground="Green"
+                                  materialDesign:HintAssist.HelperText="Use 'prototype' as password"
+                        Margin="25,0,25,25"
+  materialDesign:TextFieldAssist.UnderlineBrush="Green"
+  Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" />
+
+                    <Grid Margin="15"
+  Width="124">
+                        <Button x:Name="BtnSubmit"
+    Style="{DynamicResource MaterialDesignRaisedDarkButton}"
+    Height="50"
+    materialDesign:ButtonAssist.CornerRadius="25" Background="#FF0B12B0" Click="Login">
+                            <TextBlock
+      Text="Submit" />
+                        </Button>
+                    </Grid>
+
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Blend for Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GAMERS TECH", "GAMERS TECH.csproj", "{18C6F704-F0A0-40F0-BAF6-C733AC2AF169}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18C6F704-F0A0-40F0-BAF6-C733AC2AF169}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18C6F704-F0A0-40F0-BAF6-C733AC2AF169}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18C6F704-F0A0-40F0-BAF6-C733AC2AF169}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18C6F704-F0A0-40F0-BAF6-C733AC2AF169}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5181D2EC-FE3C-4BA1-BE22-82A756075D13}
+	EndGlobalSection
+EndGlobal

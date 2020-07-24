@@ -1,0 +1,309 @@
+﻿<Page x:Class="GAMERS_TECH.Dashboard"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GAMERS_TECH"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Dashboard">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+
+        <Grid Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <materialDesign:Card
+          Background="LightGray"
+          Foreground="Black"
+          Width="170"
+            Grid.Row="0"
+            Margin="20"
+          Padding="8"
+          UniformCornerRadius="10">
+                    <StackPanel Orientation="Vertical">
+
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="BellRing" MinWidth="70" MinHeight="70"/>
+                            <TextBlock Foreground="Black" FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" >03</TextBlock>
+
+                        </StackPanel>
+                        <TextBlock Foreground="Black" FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Emergency responses</TextBlock>
+                    </StackPanel>
+
+                </materialDesign:Card>
+                <materialDesign:Card
+          Background="#FF28A7E2"
+          Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+          Width="170"
+            Grid.Row="0"
+            Margin="20"
+          Padding="8"
+          UniformCornerRadius="10">
+                    <StackPanel Orientation="Vertical">
+
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="AccountCheck" MinWidth="70" MinHeight="70"/>
+                            <TextBlock  FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" >02</TextBlock>
+
+                        </StackPanel>
+                        <TextBlock  FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Handled responses</TextBlock>
+                    </StackPanel>
+                </materialDesign:Card>
+                <materialDesign:Card
+          Background="#FFE22828"
+          Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+          Width="170"
+            Grid.Row="0"
+            Margin="20"
+          Padding="8"
+          UniformCornerRadius="10">
+                    <StackPanel Orientation="Vertical">
+
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="AccountCancel" MinWidth="70" MinHeight="70"/>
+                            <TextBlock  FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" >02</TextBlock>
+
+                        </StackPanel>
+                        <TextBlock  FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Unhandled responses</TextBlock>
+                    </StackPanel>
+                </materialDesign:Card>
+                <materialDesign:Card
+          Background="#FF078535"
+          Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+          Width="170"
+            Grid.Row="0"
+            Margin="20"
+          Padding="8"
+          UniformCornerRadius="10">
+                    <StackPanel Orientation="Vertical">
+
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="PlaylistStar" MinWidth="70" MinHeight="70"/>
+                            <TextBlock  FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" >2nd</TextBlock>
+
+                        </StackPanel>
+                        <TextBlock  FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Position in ledger</TextBlock>
+                    </StackPanel>
+                </materialDesign:Card>
+
+            </StackPanel>
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="190"/>
+                    </Grid.RowDefinitions>
+                    <materialDesign:Card
+                          Background="{DynamicResource PrimaryHueDarkBrush}"
+                          Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                          Width="auto"
+                          Padding="8"
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        Margin="15"
+                          UniformCornerRadius="6">
+                        <StackPanel>
+                            <TextBlock>Current User</TextBlock>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <Image Source="pack://application:,,,/Resources/avatar2.png" Width="100"/>
+                                <StackPanel Margin="10">
+                                    <TextBlock FontSize="15px">John Willock</TextBlock>
+                                    <TextBlock FontSize="15px">Language: Luo</TextBlock>
+                                    <Separator
+                                  Grid.Row="1"
+                                  Style="{StaticResource MaterialDesignLightSeparator}" />
+                                    <TextBlock>Status : Active</TextBlock>
+                                    <ToggleButton
+                      Style="{StaticResource MaterialDesignSwitchDarkToggleButton}"
+                      ToolTip="MaterialDesignSwitchDarkToggleButton"
+                                    Background="Green"
+                                  
+                      IsChecked="True" BorderBrush="#FFF9F5F5" />
+
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </materialDesign:Card>
+                    <materialDesign:Card
+                          Background="White"
+                          Foreground="Black"
+                          Width="auto"
+                          Padding="8"
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        Margin="15"
+                          UniformCornerRadius="6">
+                        <StackPanel>
+                            <TextBlock>Notifications</TextBlock>
+                            <Separator
+                                  Style="{StaticResource MaterialDesignLightSeparator}" Background="LightGray" />
+                        </StackPanel>
+                    </materialDesign:Card>
+                </Grid>
+
+                <StackPanel Background="Lavender" Margin="15">
+                    <Border Background="LightGray" Height="30" >
+                        <TextBlock Foreground="Black" VerticalAlignment="Center" Margin="25,0,0,0">
+                            Company Agent Status
+                        </TextBlock>
+                    </Border>
+                    <ListView>
+                        <ListViewItem VerticalAlignment="Center" Padding="8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:Chip
+                                    Content="Attending two">
+                                    <materialDesign:Chip.Icon>
+                                        <Image
+                                     Source="pack://application:,,,/Resources/avatar2.png" />
+                                    </materialDesign:Chip.Icon>
+                                </materialDesign:Chip>
+                                <materialDesign:Chip Background="#FFF99393" Margin="100,0,0,0">
+                                    Status: Not available
+                                </materialDesign:Chip>
+                                <DockPanel HorizontalAlignment="Stretch" MinWidth="400">
+                                    <materialDesign:PopupBox
+                              DockPanel.Dock="Right"
+                              PlacementMode="BottomAndAlignRightEdges">
+                                        <ListBox>
+                                            <ListBoxItem>
+                                                Info
+                                            </ListBoxItem>
+                                            <ListBoxItem>
+                                                Message
+                                            </ListBoxItem>
+                                            <ListBoxItem>
+                                                Forward case
+                                            </ListBoxItem>
+                                        </ListBox>
+                                    </materialDesign:PopupBox>
+                                </DockPanel>
+                            </StackPanel>
+                        </ListViewItem>
+                        <ListViewItem VerticalAlignment="Center" Padding="8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:Chip
+                                    Content="Attending four">
+                                    <materialDesign:Chip.Icon>
+                                        <Image
+                                     Source="pack://application:,,,/Resources/avatar2.png" />
+                                    </materialDesign:Chip.Icon>
+                                </materialDesign:Chip>
+                                <materialDesign:Chip Background="#FF6DD472" Margin="100,0,0,0">
+                                    Status: Available
+                                </materialDesign:Chip>
+                                <DockPanel HorizontalAlignment="Stretch" MinWidth="400">
+                                    <materialDesign:PopupBox
+                              DockPanel.Dock="Right"
+                              PlacementMode="BottomAndAlignRightEdges">
+                                        <ListBox>
+                                            <ListBoxItem>
+                                                Info
+                                            </ListBoxItem>
+                                            <ListBoxItem>
+                                                Message
+                                            </ListBoxItem>
+                                            <ListBoxItem>
+                                                Forward case
+                                            </ListBoxItem>
+                                        </ListBox>
+                                    </materialDesign:PopupBox>
+                                </DockPanel>
+                            </StackPanel>
+                        </ListViewItem>
+                        <ListViewItem VerticalAlignment="Center" Padding="8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:Chip
+                                    Content="Attending three">
+                                    <materialDesign:Chip.Icon>
+                                        <Image
+                                     Source="pack://application:,,,/Resources/avatar2.png" />
+                                    </materialDesign:Chip.Icon>
+                                </materialDesign:Chip>
+                                <materialDesign:Chip Background="#FFF99393" Margin="100,0,0,0">
+                                    Status: Not available
+                                </materialDesign:Chip>
+                                <DockPanel HorizontalAlignment="Stretch" MinWidth="400">
+                                    <materialDesign:PopupBox
+                              DockPanel.Dock="Right"
+                              PlacementMode="BottomAndAlignRightEdges">
+                                        <ListBox>
+                                            <ListBoxItem>
+                                                Info
+                                            </ListBoxItem>
+                                            <ListBoxItem>
+                                                Message
+                                            </ListBoxItem>
+                                            <ListBoxItem>
+                                                Forward case
+                                            </ListBoxItem>
+                                        </ListBox>
+                                    </materialDesign:PopupBox>
+                                </DockPanel>
+                            </StackPanel>
+                        </ListViewItem>
+                    </ListView>
+
+
+
+
+                </StackPanel>
+
+                <StackPanel Background="Lavender" Margin="15">
+                    <Border Background="LightGray" Height="30" >
+                        <TextBlock Foreground="Black" VerticalAlignment="Center" Margin="25,0,0,0">
+                            Recent acitivties
+                        </TextBlock>
+                    </Border>
+                    <ListView x:Name="history">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn
+                            DisplayMemberBinding="{Binding Date}"
+                            Header="Date" Width="100" />
+                                <GridViewColumn
+                                DisplayMemberBinding="{Binding Code}"
+                                Header="Code" Width="100" />
+                                <GridViewColumn
+                                DisplayMemberBinding="{Binding Description}"
+                                Header="Description" Width="400" />
+                                <GridViewColumn
+                                Header="Options">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <materialDesign:PopupBox
+                                              PlacementMode="BottomAndAlignRightEdges">
+                                                <ListBox>
+                                                    <ListBoxItem>
+                                                        Reinstate case
+                                                    </ListBoxItem>
+                                                    <ListBoxItem>
+                                                        Details
+                                                    </ListBoxItem>
+                                                    <ListBoxItem>
+                                                        Call log
+                                                    </ListBoxItem>
+                                                </ListBox>
+                                            </materialDesign:PopupBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+</Page>

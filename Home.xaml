@@ -1,0 +1,145 @@
+﻿<Window x:Class="GAMERS_TECH.Home"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GAMERS_TECH"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Guardian Angel Medical Emergency Response System" Height="550" Width="1100"  WindowStyle="SingleBorderWindow" ResizeMode="CanResize" SizeToContent="Width" WindowStartupLocation="CenterScreen"  MinWidth="900">
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="190"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel Background="#FF181519" Grid.Row="0" Grid.Column="1">
+            
+            <materialDesign:Chip
+                    DockPanel.Dock="Right"
+                    Content="James Willock" Foreground="White">
+                <materialDesign:Chip.Icon>
+                    <Image
+                         Source="pack://application:,,,/Resources/avatar2.png" />
+                </materialDesign:Chip.Icon>
+            </materialDesign:Chip>
+            <StackPanel
+      Orientation="Horizontal"
+      materialDesign:RippleAssist.IsCentered="True">
+                <TextBlock Text="Dashboard" Foreground="White" VerticalAlignment="Center" FontSize="24" FontWeight="Normal" Margin="60,0,0,0"  />
+
+            </StackPanel>
+        </DockPanel>
+
+        <Grid Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Stretch"  HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="190"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="240"/>
+            </Grid.ColumnDefinitions>
+            <materialDesign:Card
+              Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+              Width="200"
+                Grid.Column="0"
+              Padding="8" Background="#FF1C0121">
+
+                <StackPanel Orientation="Vertical">
+                    <Image Source="pack://siteoforigin:,,,/Resources/dorc.png" Width="75"/>
+                    <Separator
+                         Style="{StaticResource MaterialDesignLightSeparator}" />
+                    <ListView Foreground="White">
+                        <ListViewItem Margin="0,5,0,0" Selected="DashboardClicked">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="MonitorDashboard" />
+                                <TextBlock Margin="25,0,0,0">Dashboard</TextBlock>
+                            </StackPanel>
+
+                        </ListViewItem>
+                        <ListViewItem Margin="0,5,0,0" Selected="CasesClicked">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Lan" />
+                                <TextBlock Margin="25,0,0,0">Active Emergencies</TextBlock>
+                            </StackPanel>
+                        </ListViewItem>
+                        <ListViewItem Margin="0,5,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CalendarArrowLeft" />
+                                <TextBlock Margin="25,0,0,0">Visitation schedule</TextBlock>
+                            </StackPanel>
+                        </ListViewItem>
+                        <ListViewItem Margin="0,5,0,0" Selected="HisotryClicked">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="History" />
+                                <TextBlock Margin="25,0,0,0">History</TextBlock>
+                            </StackPanel>
+                        </ListViewItem>
+                        <ListViewItem Margin="0,5,0,0" Selected="PersonnelinfoClicked">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="InfoCircle" />
+                                <TextBlock Margin="25,0,0,0">Personnel info</TextBlock>
+                            </StackPanel>
+                        </ListViewItem>
+                        <ListViewItem Margin="0,5,0,0" Selected="LibraryClicked">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Library" />
+                                <TextBlock Margin="25,0,0,0">Library</TextBlock>
+                            </StackPanel>
+                        </ListViewItem>
+                        <ListViewItem Margin="0,5,0,0" x:Name="map" Selected="MapClicked">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Map" />
+                                <TextBlock Margin="25,0,0,0">Map</TextBlock>
+                            </StackPanel>
+                        </ListViewItem>
+                        <ListViewItem Margin="0,5,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Settings" />
+                                <TextBlock Margin="25,0,0,0">Settings</TextBlock>
+                            </StackPanel>
+                        </ListViewItem>
+                    </ListView>
+                </StackPanel>
+            </materialDesign:Card>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <Frame x:Name="body" VerticalAlignment="Stretch"  Padding="8,8,0,0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Column="0" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch"  MinHeight="500" MinWidth="660" />
+            <GroupBox
+                      Header="Ongoing cases"
+                      Style="{DynamicResource MaterialDesignCardGroupBox}"
+                      Margin="6"
+                Grid.Column="1"
+                      materialDesign:ColorZoneAssist.Mode="Custom"
+                      materialDesign:ColorZoneAssist.Background="Black"
+                      materialDesign:ColorZoneAssist.Foreground="White" Background="#FFEAEAEA" Foreground="Black">
+                <GroupBox.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel
+                                                Orientation="Horizontal">
+                            <materialDesign:PackIcon
+                                                      Kind="ShieldRefresh"
+                                                      Height="32"
+                                                      Width="32"
+                                                      VerticalAlignment="Center" />
+                            <TextBlock
+                                                  Margin="8,0,0,0"
+                                                  VerticalAlignment="Center"
+                                                  Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                  Text="{Binding}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </GroupBox.HeaderTemplate>
+
+            </GroupBox>
+        </Grid>
+
+    </Grid>
+</Window>
