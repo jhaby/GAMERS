@@ -23,6 +23,8 @@ namespace GAMERS
         public MainWindow()
         {
             InitializeComponent();
+            this.MinWidth = 900;
+            this.MinHeight = 600;
         }
     }
 }
