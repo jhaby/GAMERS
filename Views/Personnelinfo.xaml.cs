@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Linq;
 
 
 namespace GAMERS_TECH
@@ -19,12 +20,32 @@ namespace GAMERS_TECH
     /// </summary>
     public partial class Personnelinfo : Page
     {
+        private List<PersonnelData> UserList;
+
         public Personnelinfo()
 
         {
             InitializeComponent();
+            UserList = new List<PersonnelData>();
             PersonnelInfoViewModel persons = new PersonnelInfoViewModel();
-            Users.ItemsSource = persons.GetData();
+            UserList = persons.GetData();
+            Users.ItemsSource = UserList;
+
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Users.ItemsSource);
+            view.Filter = UseFilter;
+        }
+
+        private bool UseFilter(object obj)
+        {
+            if (String.IsNullOrEmpty(SearchUser.Text))
+                return true;
+            else
+                return ((obj as PersonnelData).Name.IndexOf(SearchUser.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        private void SearchUser_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(Users.ItemsSource).Refresh();
         }
     }
 }

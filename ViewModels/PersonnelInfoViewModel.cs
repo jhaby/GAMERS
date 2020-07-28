@@ -17,27 +17,33 @@ namespace GAMERS_TECH
         }
         public List<PersonnelData> GetData()
         {
-
-            using(MySqlConnection Conn = new MySqlConnection(DBConnection.ConnString))
+            
+            var person = new List<PersonnelData>();
+            using (MySqlConnection Conn = new MySqlConnection(DBConnection.ConnString))
             {
                 Conn.Open();
                 string loadstring = "SELECT * FROM bio_data";
                 MySqlCommand cmd = new MySqlCommand(loadstring, Conn);
                 MySqlDataReader rd = cmd.ExecuteReader();
+
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        person.Add(new PersonnelData
+                        {
+                            Name = $"Name: {rd[1].ToString()} {rd[2].ToString()} {rd[3].ToString()}",
+                            Role = $"Role: {rd[4].ToString()}",
+                            Email = $"Email: {rd[8].ToString()}",
+                            Phone = $"Phone: {rd[6].ToString()}",
+                            Filepath = "pack://application:,,,/Resources/avatar2.png"
+
+                        });
+                    }
+                }
             }
 
-            var person = new List<PersonnelData>
-            {
-                new PersonnelData
-                {
-                    Name = "Habizana Jeremiah",
-                    Role = "Agent",
-                    Email = "habizana@doctorsarch.org",
-                    Phone = "0780161616",
-                    Filepath = "pack://application:,,,/Resources/avatar2.png"
-
-                }
-            };
+            
             return person;
         }
     }

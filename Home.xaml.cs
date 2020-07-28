@@ -34,31 +34,37 @@ namespace GAMERS_TECH
         private void DashboardClicked(object sender, RoutedEventArgs e)
         {
             body.NavigationService.Navigate(new Dashboard());
+            heading.Text = "Dashboard";
         }
 
         private void MapClicked(object sender, RoutedEventArgs e)
         {
             body.NavigationService.Navigate(new IndexPage());
+            heading.Text = "Map";
         }
 
         private void HisotryClicked(object sender, RoutedEventArgs e)
         {
             body.NavigationService.Navigate(new HistoryPage());
+            heading.Text = "History";
         }
 
         private void PersonnelinfoClicked(object sender, RoutedEventArgs e)
         {
             body.NavigationService.Navigate(new Personnelinfo());
+            heading.Text = "Personnel info";
         }
 
         private void CasesClicked(object sender, RoutedEventArgs e)
         {
             body.NavigationService.Navigate(new CasesPage());
+            heading.Text = "Alerts ledger";
         }
 
         private void LibraryClicked(object sender, RoutedEventArgs e)
         {
             body.NavigationService.Navigate(new LibraryPage());
+            heading.Text = "Library";
         }
     }
 }

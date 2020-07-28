@@ -31,7 +31,7 @@
             <StackPanel
       Orientation="Horizontal"
       materialDesign:RippleAssist.IsCentered="True">
-                <TextBlock Text="Dashboard" Foreground="White" VerticalAlignment="Center" FontSize="24" FontWeight="Normal" Margin="60,0,0,0"  />
+                <TextBlock Text="Dashboard" Foreground="White" x:Name="heading" VerticalAlignment="Center" FontSize="24" FontWeight="Normal" Margin="60,0,0,0"  />
 
             </StackPanel>
         </DockPanel>

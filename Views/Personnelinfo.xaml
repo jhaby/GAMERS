@@ -88,6 +88,8 @@
                                 materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                                 BorderThickness="0"
                                 MinWidth="200"
+                                x:Name="SearchUser"
+                                TextChanged="SearchUser_TextChanged"
                                 VerticalAlignment="Center" />
                             <Button
                                 Style="{DynamicResource MaterialDesignToolButton}"
@@ -97,6 +99,19 @@
                 
                 <Separator
                   Style="{StaticResource MaterialDesignLightSeparator}" Background="LightGray"  />
+                <Grid
+                  Width="134">
+                                    <Button
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Height="50"
+                                        Background="CadetBlue"
+                    materialDesign:ButtonAssist.CornerRadius="10"
+                    ToolTip="MaterialDesignRaisedButton with Round Corners">
+                        <TextBlock Text="+ Add new user" />
+                    </Button>
+                </Grid>
+
+
                 <ListView ItemTemplate="{StaticResource PersonnelInfo}" x:Name="Users" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" />
 
                 
