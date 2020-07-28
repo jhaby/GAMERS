@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Guardian Angel Medical Emergency Response System" Height="550" Width="1100"  WindowStyle="SingleBorderWindow" ResizeMode="CanResize" SizeToContent="Width" WindowStartupLocation="CenterScreen"  MinWidth="900">
-
+    
 
     <Grid>
         <Grid.RowDefinitions>

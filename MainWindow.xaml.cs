@@ -39,9 +39,22 @@ namespace GAMERS_TECH
 
         private void Login(object sender, RoutedEventArgs e)
         {
-            Home hm = new Home();
-            hm.Show();
-            this.Close();
+            DBConnection db = new DBConnection();
+            string user = Username.Text;
+            string pswd = Password.Password;
+            UserData Userdata = db.Login(user, pswd);
+            if(Userdata.Username != "none")
+            {
+                Home hm = new Home();
+                hm.Show();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Unauthorized user");
+            }
+
+            Application.Current.Properties["Userdata"] = Userdata;
         }
     }
 }

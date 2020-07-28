@@ -31,12 +31,22 @@
     <Reference Include="Microsoft.Maps.MapControl.WPF">
       <HintPath>E:\projects\controls\V1\Libraries\Microsoft.Maps.MapControl.WPF.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>E:\backup\tetra-cs\packages\MySql.Data.8.0.19\lib\netstandard2.1\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Ubiety.Dns.Core">
+      <HintPath>E:\backup\tetra-cs\packages\MySql.Data.8.0.19\lib\netstandard2.1\Ubiety.Dns.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\avatar2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\" />
   </ItemGroup>
 
 </Project>
