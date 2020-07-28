@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace GAMERS_TECH
 {
     /// <summary>
@@ -22,6 +23,8 @@ namespace GAMERS_TECH
 
         {
             InitializeComponent();
+            PersonnelInfoViewModel persons = new PersonnelInfoViewModel();
+            Users.ItemsSource = persons.GetData();
         }
     }
 }
