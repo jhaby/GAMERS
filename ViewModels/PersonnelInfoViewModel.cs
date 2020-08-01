@@ -8,11 +8,11 @@ namespace GAMERS_TECH
 {
     public class PersonnelInfoViewModel
     {
-        public List<PersonnelData> list { get; private set; }
+        public List<PersonnelData> List { get; private set; }
 
         public PersonnelInfoViewModel()
         {
-            list = GetData();
+            List = GetData();
 
         }
         public List<PersonnelData> GetData()

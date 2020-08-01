@@ -12,17 +12,16 @@ using System.Windows.Shapes;
 
 namespace GAMERS_TECH
 {
-    /// <summary>
-    /// Interaction logic for Home.xaml
-    /// </summary>
+    
     public partial class Home : Window
     {
-        public Home()
+        UserData User;
+        public Home(UserData Userinfo)
         {
             InitializeComponent();
-
+            User = Userinfo;
             Loaded += Home_Loaded;
-            
+            NameChip.Content = "Hi, "+ User.Username;
             
         }
 

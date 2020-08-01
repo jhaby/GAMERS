@@ -15,7 +15,7 @@ namespace GAMERS_TECH
         private string filepath;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string member)
+        private void OnPropertyChanged([CallerMemberName] string member="")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(member));
         }
@@ -31,7 +31,7 @@ namespace GAMERS_TECH
                 if(value != name)
                 {
                     this.name = value;
-                    OnPropertyChanged("Name");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace GAMERS_TECH
                 if (value != role)
                 {
                     this.role = value;
-                    OnPropertyChanged("Role");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace GAMERS_TECH
                 if (value != email)
                 {
                     this.email = value;
-                    OnPropertyChanged("Email");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace GAMERS_TECH
                 if (value != phone)
                 {
                     this.phone = value;
-                    OnPropertyChanged("Phone");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace GAMERS_TECH
                 if (value != filepath)
                 {
                     this.filepath = value;
-                    OnPropertyChanged("Filepath");
+                    OnPropertyChanged();
                 }
             }
         }

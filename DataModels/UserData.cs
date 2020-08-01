@@ -9,7 +9,7 @@ namespace GAMERS_TECH
         public string UserId { get; set; }
         public string Username { get; set; }
         public string Photo { get; set; }
-        public string Accesstype { get; set; }
+        public string AccessType { get; set; }
         public int TotalAlerts { get; set; }
         public int HandledAlerts { get; set; }
         public int MissedAlerts { get; set; }

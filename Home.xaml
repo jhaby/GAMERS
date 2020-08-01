@@ -22,6 +22,7 @@
             
             <materialDesign:Chip
                     DockPanel.Dock="Right"
+                x:Name="NameChip"
                     Content="James Willock" Foreground="White">
                 <materialDesign:Chip.Icon>
                     <Image
@@ -49,7 +50,7 @@
               Padding="8" Background="#FF1C0121">
 
                 <StackPanel Orientation="Vertical">
-                    <Image Source="pack://siteoforigin:,,,/Resources/dorc.png" Width="75"/>
+                    <Image Source="pack://application:,,,/Resources/logo2.png" Width="105"/>
                     <Separator
                          Style="{StaticResource MaterialDesignLightSeparator}" />
                     <ListView Foreground="White">

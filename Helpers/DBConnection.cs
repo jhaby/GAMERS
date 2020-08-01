@@ -3,71 +3,42 @@ using System.Collections.Generic;
 using System.Text;
 using MySql.Data;
 using MySql.Data.MySqlClient;
-
+using Dapper;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace GAMERS_TECH
 {
     public class DBConnection
     {
         public static string ConnString = "server=localhost;user=root;database=gamers_356;port=3306;password=255Admin";
-        private UserData Person;
+        
 
-        public UserData Login(string username, string password)
+        public static async Task<UserData> Login(string user, string pass)
         {
-             
+            string SqlString = "SELECT UserId,Username,Photo,AccessType,TotalAlerts,MissedAlerts,HandledAlerts FROM authentication_table WHERE Username=@username AND Password=@password AND Status='active' ";
             try
             {
-                string SqlString = $"SELECT UserId,Username,Photo,Access_type,TotalAlerts,MissedAlerts,HandledAlerts FROM authentication_table WHERE Username='{username}' AND Password='{password}' AND Status='active' ";
-                using (MySqlConnection Conn = new MySqlConnection(ConnString))
+                using (var conn = new MySqlConnection(ConnString))
                 {
-                    Conn.Open();
-                    MySqlCommand cmd = new MySqlCommand(SqlString, Conn);
-                    MySqlDataReader rd = cmd.ExecuteReader();
+                    var row = await conn.QueryAsync<UserData>(SqlString, new { username = user, password = pass });
 
-                    if (!rd.HasRows)
-                    {
-                        Person = new UserData()
-                        {
-                            UserId = "none",
-                            Username = "none",
-                            Photo = "",
-                            
-                        };
-                    }
-                    else
-                    {
-
-                        while (rd.Read())
-                        {
-                            Person = new UserData()
-                            {
-                                UserId = rd[0].ToString(),
-                                Username = rd[1].ToString(),
-                                Photo = rd[2].ToString(),
-                                Accesstype = rd[3].ToString(),
-                                TotalAlerts = Convert.ToInt32(rd[4]),
-                                MissedAlerts = Convert.ToInt32(rd[5]),
-                                HandledAlerts = Convert.ToInt32(rd[6])
-
-                            };
-                        }
-                    }
-                    rd.Close();
+                    return row.FirstOrDefault();
                 }
             }
-            catch
+            catch(Exception)
             {
-                Person = new UserData()
+                UserData Person = new UserData()
                 {
                     UserId = "none",
                     Username = "none",
                     Photo = ""
                 };
+                return Person;
             }
-            return Person;
-                
+
         }
 
-       
     }
+    
 }
