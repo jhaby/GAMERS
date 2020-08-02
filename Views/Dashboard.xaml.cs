@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,33 +19,56 @@ namespace GAMERS_TECH
     /// </summary>
     public partial class Dashboard : Page
     {
-        public Dashboard()
+        UserData User;
+        StatusModel status;
+
+        public Dashboard(UserData Userinfo,StatusModel stat,ConnService signalService)
         {
             InitializeComponent();
 
-            List<History> Items1 = new List<History> {
-                new History
-                    {
-                Date = DateTime.Now.ToShortDateString(),
-                Code = "0034",
-                Description = "Pnuemonia"
-                    },
-                 new History
-                    {
-                Date = DateTime.Now.ToShortDateString(),
-                Code = "0027",
-                Description = "Labour"
-                    }
-                };
-            history.ItemsSource = Items1;
+            User = Userinfo;
 
+            this.DataContext = User;
+            status = stat;
+
+            signalService.StatusReceived += (StatusModel obj) =>
+            {
+                if(obj.UserId == status.UserId)
+                {
+                    status.Status = obj.Status;
+                    User.Status = obj.Status;
+                }
+            };
+            LoadHistory();
+            StatusToggle.Unchecked += (o, e) =>
+            {
+                status.UserId = User.UserId;
+                status.Status = "Unavailable";
+                User.Status = status.Status;
+                Task.Run(async () => {
+                    await signalService.SendStatus(status);
+                    await Helpers.UpdateStatus(status.Status, status.UserId);
+                });
+            };
+
+            StatusToggle.Checked += (o, e) =>
+            {
+                status.UserId = User.UserId;
+                status.Status = "Active";
+                User.Status = status.Status;
+                Task.Run(async () => {
+                    await signalService.SendStatus(status);
+                    await Helpers.UpdateStatus(status.Status, status.UserId);
+                    });
+            };
+
+        }
+
+        private void LoadHistory()
+        {
+            
         }
     }
 
-    class History
-    {
-        public string Date { get; set; }
-        public string Code { get; set; }
-        public string Description { get; set; }
-    }
+    
 }

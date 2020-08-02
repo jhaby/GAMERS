@@ -9,6 +9,41 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Dashboard">
 
+    <Page.Resources>
+        <DataTemplate x:Key="AgentsList">
+            <ListViewItem VerticalAlignment="Center" Padding="8">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:Chip
+                                    Content="{Binding Name}">
+                        <materialDesign:Chip.Icon>
+                            <Image
+                                     Source="pack://application:,,,/Resources/avatar2.png" />
+                        </materialDesign:Chip.Icon>
+                    </materialDesign:Chip>
+                    <materialDesign:Chip Background="#FFF99393" Margin="100,0,0,0" Content="{Binding Status}">
+                    </materialDesign:Chip>
+                    <DockPanel HorizontalAlignment="Stretch" MinWidth="400">
+                        <materialDesign:PopupBox
+                              DockPanel.Dock="Right"
+                              PlacementMode="BottomAndAlignRightEdges">
+                            <ListBox>
+                                <ListBoxItem>
+                                    Info
+                                </ListBoxItem>
+                                <ListBoxItem>
+                                    Message
+                                </ListBoxItem>
+                                <ListBoxItem>
+                                    Forward case
+                                </ListBoxItem>
+                            </ListBox>
+                        </materialDesign:PopupBox>
+                    </DockPanel>
+                </StackPanel>
+            </ListViewItem>
+        </DataTemplate>
+    </Page.Resources>
+
     <ScrollViewer HorizontalScrollBarVisibility="Auto">
 
         <Grid Background="White">
@@ -30,10 +65,10 @@
 
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="BellRing" MinWidth="70" MinHeight="70"/>
-                            <TextBlock Foreground="Black" FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" >03</TextBlock>
+                            <TextBlock Foreground="Black" FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" Text="{Binding TotalAlerts}" />
 
                         </StackPanel>
-                        <TextBlock Foreground="Black" FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Emergency responses</TextBlock>
+                        <TextBlock Foreground="Black" FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Emergency Alerts</TextBlock>
                     </StackPanel>
 
                 </materialDesign:Card>
@@ -49,10 +84,10 @@
 
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="AccountCheck" MinWidth="70" MinHeight="70"/>
-                            <TextBlock  FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" >02</TextBlock>
+                            <TextBlock  FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" Text="{Binding HandledAlerts}" />
 
                         </StackPanel>
-                        <TextBlock  FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Handled responses</TextBlock>
+                        <TextBlock  FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Handled Alerts</TextBlock>
                     </StackPanel>
                 </materialDesign:Card>
                 <materialDesign:Card
@@ -67,10 +102,10 @@
 
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="AccountCancel" MinWidth="70" MinHeight="70"/>
-                            <TextBlock  FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" >02</TextBlock>
+                            <TextBlock  FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" Text="{Binding MissedAlerts}" />
 
                         </StackPanel>
-                        <TextBlock  FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Unhandled responses</TextBlock>
+                        <TextBlock  FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Unhandled Alerts</TextBlock>
                     </StackPanel>
                 </materialDesign:Card>
                 <materialDesign:Card
@@ -117,17 +152,15 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <Image Source="pack://application:,,,/Resources/avatar2.png" Width="100"/>
                                 <StackPanel Margin="10">
-                                    <TextBlock FontSize="15px">John Willock</TextBlock>
-                                    <TextBlock FontSize="15px">Language: Luo</TextBlock>
+                                    <TextBlock FontSize="15px" Text="{Binding Fullname}"/>
+                                    <TextBlock FontSize="15px" Text="{Binding Language}"/>
                                     <Separator
                                   Grid.Row="1"
                                   Style="{StaticResource MaterialDesignLightSeparator}" />
-                                    <TextBlock>Status : Active</TextBlock>
+                                    <TextBlock Text="{Binding Status}"/>
                                     <ToggleButton
                       Style="{StaticResource MaterialDesignSwitchDarkToggleButton}"
-                      ToolTip="MaterialDesignSwitchDarkToggleButton"
-                                    Background="Green"
-                                  
+                      Background="Green" x:Name="StatusToggle"
                       IsChecked="True" BorderBrush="#FFF9F5F5" />
 
                                 </StackPanel>
@@ -158,99 +191,8 @@
                         </TextBlock>
                     </Border>
                     <ListView>
-                        <ListViewItem VerticalAlignment="Center" Padding="8">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:Chip
-                                    Content="Attending two">
-                                    <materialDesign:Chip.Icon>
-                                        <Image
-                                     Source="pack://application:,,,/Resources/avatar2.png" />
-                                    </materialDesign:Chip.Icon>
-                                </materialDesign:Chip>
-                                <materialDesign:Chip Background="#FFF99393" Margin="100,0,0,0">
-                                    Status: Not available
-                                </materialDesign:Chip>
-                                <DockPanel HorizontalAlignment="Stretch" MinWidth="400">
-                                    <materialDesign:PopupBox
-                              DockPanel.Dock="Right"
-                              PlacementMode="BottomAndAlignRightEdges">
-                                        <ListBox>
-                                            <ListBoxItem>
-                                                Info
-                                            </ListBoxItem>
-                                            <ListBoxItem>
-                                                Message
-                                            </ListBoxItem>
-                                            <ListBoxItem>
-                                                Forward case
-                                            </ListBoxItem>
-                                        </ListBox>
-                                    </materialDesign:PopupBox>
-                                </DockPanel>
-                            </StackPanel>
-                        </ListViewItem>
-                        <ListViewItem VerticalAlignment="Center" Padding="8">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:Chip
-                                    Content="Attending four">
-                                    <materialDesign:Chip.Icon>
-                                        <Image
-                                     Source="pack://application:,,,/Resources/avatar2.png" />
-                                    </materialDesign:Chip.Icon>
-                                </materialDesign:Chip>
-                                <materialDesign:Chip Background="#FF6DD472" Margin="100,0,0,0">
-                                    Status: Available
-                                </materialDesign:Chip>
-                                <DockPanel HorizontalAlignment="Stretch" MinWidth="400">
-                                    <materialDesign:PopupBox
-                              DockPanel.Dock="Right"
-                              PlacementMode="BottomAndAlignRightEdges">
-                                        <ListBox>
-                                            <ListBoxItem>
-                                                Info
-                                            </ListBoxItem>
-                                            <ListBoxItem>
-                                                Message
-                                            </ListBoxItem>
-                                            <ListBoxItem>
-                                                Forward case
-                                            </ListBoxItem>
-                                        </ListBox>
-                                    </materialDesign:PopupBox>
-                                </DockPanel>
-                            </StackPanel>
-                        </ListViewItem>
-                        <ListViewItem VerticalAlignment="Center" Padding="8">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:Chip
-                                    Content="Attending three">
-                                    <materialDesign:Chip.Icon>
-                                        <Image
-                                     Source="pack://application:,,,/Resources/avatar2.png" />
-                                    </materialDesign:Chip.Icon>
-                                </materialDesign:Chip>
-                                <materialDesign:Chip Background="#FFF99393" Margin="100,0,0,0">
-                                    Status: Not available
-                                </materialDesign:Chip>
-                                <DockPanel HorizontalAlignment="Stretch" MinWidth="400">
-                                    <materialDesign:PopupBox
-                              DockPanel.Dock="Right"
-                              PlacementMode="BottomAndAlignRightEdges">
-                                        <ListBox>
-                                            <ListBoxItem>
-                                                Info
-                                            </ListBoxItem>
-                                            <ListBoxItem>
-                                                Message
-                                            </ListBoxItem>
-                                            <ListBoxItem>
-                                                Forward case
-                                            </ListBoxItem>
-                                        </ListBox>
-                                    </materialDesign:PopupBox>
-                                </DockPanel>
-                            </StackPanel>
-                        </ListViewItem>
+                       
+                        
                     </ListView>
 
 

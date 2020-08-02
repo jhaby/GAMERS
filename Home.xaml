@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GAMERS_TECH"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Guardian Angel Medical Emergency Response System" Height="550" Width="1100"  WindowStyle="SingleBorderWindow" ResizeMode="CanResize" SizeToContent="Width" WindowStartupLocation="CenterScreen"  MinWidth="900">
+        Title="Guardian Angel Medical Emergency Response System" Height="550" Width="1100"  WindowStyle="SingleBorderWindow" ResizeMode="CanResize" SizeToContent="Manual" WindowStartupLocation="CenterScreen"  MinWidth="900" WindowState="Maximized">
     
 
     <Grid>

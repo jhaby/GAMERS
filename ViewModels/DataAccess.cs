@@ -6,39 +6,46 @@ using System.Data;
 
 using MySql.Data.MySqlClient;
 using Dapper;
-using MySql.Data;
-using System.Data.SqlClient;
 
 namespace GAMERS_TECH
 {
    class DataAccess
     {
-        public static async Task<UserData> LoadData(string sql,string user, string pass, string connectionString)
+        public static async Task<List<T>> LoadDataList<T,U>(string sql, U parameter, string connectionString)
         {
-            try
-            {
-                using (var connection = new SqlConnection(connectionString))
+            
+                using (var connection = new MySqlConnection(connectionString))
                 {
-                    var row = await connection.QueryAsync<UserData>(sql,new {Username= user, Password=pass } );
-                    return row.FirstOrDefault();
+                    var row = await connection.QueryAsync<T>(sql, parameter);
+                    return row.ToList();
 
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            
         }
-       
 
-        public static async Task SaveData<U>(string sql, U parameters, string connectionString)
+        public static async Task<T> LoadData<T, U>(string sql, U parameter, string connectionString)
         {
-            using (IDbConnection connection = new MySqlConnection(connectionString))
+
+            using (var connection = new MySqlConnection(connectionString))
             {
-                 await connection.ExecuteAsync(sql, parameters);
-                
+                var row = await connection.QueryAsync<T>(sql, parameter);
+                return row.FirstOrDefault();
+
+            }
+
+        }
+
+
+        public static async Task<int> SaveData<U>(string sql, U parameters, string connectionString)
+        {
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                int x = await conn.ExecuteAsync(sql, parameters);
+                return x;
             }
         }
+
+       
 
     }
 }

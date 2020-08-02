@@ -9,52 +9,45 @@ namespace GAMERS_TECH
 {
     public class Helpers
     {   
-        public static string connectionString = "Server=db4free.net,3306;Database=gamers_server;User Id=arnold; Password=Arn0ld!nsql";
-        public static string connectionString2 = "Server=localhost;Database=gamers_356;Uid=root;Pwd=255Admin";
+        private static readonly string connectionString = "server=localhost;user=root;database=gamers_356;port=3306;password=255Admin";
 
         /*Section for loading information from database tables*/
-        UserData loginInfo;
 
-        public async Task<UserData> LoadLoginInfo(string user, string pass)
+        public static async Task<UserData> LoadLoginInfo(string user, string pass)
         {
-            try
-            {
-                loginInfo = new UserData();
-                string sql = "SELECT UserId,Username,Photo,AccessType,TotalAlerts,MissedAlerts,HandledAlerts FROM LoginTable WHERE Username=@user and Password=@pass ";
-                loginInfo = await DataAccess.LoadData(sql, user,pass, connectionString);
-                return loginInfo;
-            }
-            catch(Exception ex)
-            {
-                UserData loginInfo = new UserData()
-                {
-                        UserId="none",
-                        Username="none",
-                        AccessType = "custom" +ex.Message + ex.Source+ex.TargetSite
-              
-                };
-                return loginInfo;
-            }
+            string SqlString = @"SELECT a.UserId,a.Username,a.Photo,
+                                a.AccessType,a.TotalAlerts,a.MissedAlerts,
+                                a.HandledAlerts, b.Firstname, b.Surname,b.Language, a.Status
+                                FROM authentication_table a
+                                INNER JOIN bio_data b
+                                ON a.Username=@username AND a.Password=@password
+                                AND a.UserId = b.UserId ";
+
+            return await DataAccess.LoadData<UserData, dynamic>(SqlString, new { username = user, password = pass },connectionString);
+
         }
 
-       
+
 
         /*Section for adding information to the database */
-        public async Task InsertLoginInfo()
+        public static async Task<int> InsertLoginInfo(CreateUserData userdata)
         {
-            string sql = "insert into LoginTable (FullName, AccessType, TotalAlerts, HandledAlerts, MissedAlerts, Language) values (@FullName, @AccessType, @TotalAlerts, @HandledAlerts, @MissedAlerts, @Language)";
+            userdata.PhotoPath = "pack://application:,,,/Resources/avatar2.png";
 
-            await DataAccess.SaveData(sql, new { FullName="", AccessType="", TotalAlerts=0, HandledAlerts=0, MissedAlerts=0, Language="English"}, connectionString);
+            string sql = @"INSERT INTO bio_data(UserId,Firstname,Surname,Othername,Role,Phone,
+                        Alt_phone,Email,Culture,Language,PhotoPath) VALUES(@PrevUid,@Firstname,@Surname,@Othername,@Role,
+                         @Phone,@AltPhone,@Email,@Tribe,@Language,@PhotoPath) ";
 
+            string sql2 = @"INSERT INTO authentication_table(UserId,Username,AccessType,Photo)
+                            VALUES(@UserId,@Firstname,@Role,@Photo) ";
+
+           int resultcode = await DataAccess.SaveData(sql,userdata , connectionString);
+           int result2 = await DataAccess.SaveData(sql2,userdata, connectionString);
+           return result2;
+            //new { UserId = userdata.PrevUid, Firstname = userdata.Firstname, Role = userdata.Role, Photo = userdata.PhotoPath }
         }
 
-        public async Task InsertPersonnelInfo()
-        {
-            string sql = "insert into Personnel (Name, Role, Email, Phone, filepath) values (@Name, @Role, @Email, @Phone, @filepath)";
 
-            await DataAccess.SaveData(sql, new { Name="", Role="", Email="", Phone="", filepath="" }, connectionString);
-
-        }
 
         /*Section for updating the data in the database */
         public async Task UpdateLoginInfo()
@@ -88,6 +81,18 @@ namespace GAMERS_TECH
 
             await DataAccess.SaveData(sql, new { Name=" " }, connectionString);
 
+        }
+        public static async Task SendMessage(string message)
+        {
+            string sql = "delete from Personnel where Name = @Name";
+
+            await DataAccess.SaveData(sql, new { Name = " " }, connectionString);
+        }
+
+        public static async Task UpdateStatus(string status, string userid)
+        {
+            string sql = "UPDATE authentication_table SET Status=@Status WHERE UserId=@UserId";
+            await DataAccess.SaveData(sql, new { Status = status, UserId = userid }, connectionString);
         }
     }
 }

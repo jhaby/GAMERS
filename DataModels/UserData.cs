@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace GAMERS_TECH
 {
-    public class UserData
+    public class UserData: INotifyPropertyChanged
     {
+        private string status;
+        private string language;
+
         public string UserId { get; set; }
         public string Username { get; set; }
         public string Photo { get; set; }
@@ -13,6 +17,37 @@ namespace GAMERS_TECH
         public int TotalAlerts { get; set; }
         public int HandledAlerts { get; set; }
         public int MissedAlerts { get; set; }
+        public string Firstname { get; set; }
+        public string Surname { get; set; }
+        public string Language { get =>"Language: "+ language; set => language = value; }
+        public string Status
+        {
+            get
+            {
+                return "Status: " + status;
+            }
+            set
+            {
+                status = value;
+                OnPropertyChanged("Status");
+            }
+        }
+
+
+        public string Fullname
+        {
+            get
+            {
+                return Firstname + " " + Surname;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged( string member)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(member));
+        }
+
     }
 
     public class PersonelInfo

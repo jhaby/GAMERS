@@ -3,35 +3,99 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows.Input;
 
 namespace GAMERS_TECH
 {
     public class PersonnelData : INotifyPropertyChanged
     {
+        private string _userId;
+        private string fname;
         private string name;
+        private string sname;
         private string role;
         private string email;
         private string phone;
-        private string filepath;
+        private string photoPath;
+        private string status;
+        private string message;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string member="")
+        private void OnPropertyChanged(string member)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(member));
         }
+        public string Message {
+            get
+            {
+                return message;
+            }
+            set
+            {
+                if (value != message)
+                {
+                    this.message = value;
+                    OnPropertyChanged("Message");
+                }
+            }
+        }
 
+        public string UserId
+        {
+            get
+            {
+                return _userId;
+            }
+            set
+            {
+                if (value != _userId)
+                {
+                    this._userId = value;
+                    OnPropertyChanged("UserId");
+                }
+            }
+        }
         public string Name
         {
             get
             {
-                return name;
+                return fname + " " + sname;
             }
             set
             {
-                if(value != name)
+                name = fname + " " + sname;
+                OnPropertyChanged("Name");
+
+            }
+        }
+
+        public string Firstname
+        {
+            get
+            {
+                return fname;
+            }
+            set
+            {
+                if (value != fname)
                 {
-                    this.name = value;
-                    OnPropertyChanged();
+                    this.fname = value;
+                    OnPropertyChanged("Firstname");
+                }
+            }
+        }
+        public string Surname
+        {
+            get
+            {
+                return sname;
+            }
+            set
+            {
+                if (value != sname)
+                {
+                    this.sname = value;
+                    OnPropertyChanged("Surname");
                 }
             }
         }
@@ -47,7 +111,7 @@ namespace GAMERS_TECH
                 if (value != role)
                 {
                     this.role = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("Role");
                 }
             }
         }
@@ -62,7 +126,7 @@ namespace GAMERS_TECH
                 if (value != email)
                 {
                     this.email = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("Email");
                 }
             }
         }
@@ -77,23 +141,49 @@ namespace GAMERS_TECH
                 if (value != phone)
                 {
                     this.phone = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("Phone");
                 }
             }
         }
-        public string Filepath
+        public string PhotoPath
         {
             get
             {
-                return filepath;
+                return photoPath;
             }
             set
             {
-                if (value != filepath)
+                if (value != photoPath)
                 {
-                    this.filepath = value;
-                    OnPropertyChanged();
+                    this.photoPath = value;
+                    OnPropertyChanged("PhotoPath");
                 }
+            }
+        }
+
+        public string Status
+        {
+            get
+            {
+                return status;
+            }
+            set
+            {
+                if (value != status)
+                {
+                    this.status = value;
+                    OnPropertyChanged("Status");
+                }
+            }
+        }
+        public ICommand SendMessageCommand
+        {
+            get; private set;
+        }
+        void SendCommand(string m)
+        {
+            if (message != null)
+            {
             }
         }
     }

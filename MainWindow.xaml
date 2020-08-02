@@ -31,6 +31,7 @@
             </Border>
             <Border Background="White" CornerRadius="5" Height="253" materialDesign:ShadowAssist.ShadowDepth="Depth4" BorderBrush="#FF959595" BorderThickness="2,2,2,2">
                 <StackPanel Margin="20 5 20 20">
+                    <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" Visibility="Collapsed" x:Name="progress"/>
                     <TextBlock Text="Login" TextAlignment="Center" FontSize="20" FontWeight="Bold" />
                     <ComboBox x:Name="Username" Margin="25,25,25,5" Style="{DynamicResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="Select user">
                         <ComboBoxItem Content="Aloysius"/>

@@ -28,7 +28,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding Filepath}" />
+                    <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding PhotoPath}" />
                     <StackPanel Grid.Column="1" Grid.Row="0" Margin="20,0,0,0">
                         <TextBlock FontSize="15px" FontWeight="Bold" Text="{Binding Name}" />
                         <TextBlock FontSize="10px" Text="{Binding Role}" />
@@ -39,15 +39,51 @@
                         <Button
                               Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                               ToolTip="Send a message">
-                            <materialDesign:PackIcon
-                                Kind="Message"
-                                Height="24"
-                                Width="24" />
+                            
+                            <materialDesign:PopupBox
+                                PlacementMode="LeftAndAlignMiddles"
+                                UnfurlOrientation="Horizontal"
+                                ToolTip="Manage items"
+                                StaysOpen="True"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom">
+                                <materialDesign:PopupBox.ToggleContent>
+                                    <materialDesign:PackIcon Kind="MessageReplyText" Foreground="White" />
+                                </materialDesign:PopupBox.ToggleContent>
+                                <StackPanel Orientation="vertical" Width="400">
+                                    <ProgressBar Visibility="Collapsed" x:Name="Messageprogress" IsEnabled="False" IsIndeterminate="True" />
+                                    <TextBlock FontWeight="Bold" FontSize="20px" HorizontalAlignment="Center" TextAlignment="Center">Send message</TextBlock>
+                                    <Grid Margin="20">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="120"/>
+                                            <RowDefinition Height="30"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBox
+                                            Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+                                            VerticalAlignment="Top"
+                                            Height="100"
+                                            Grid.Row="0"
+                                            AcceptsReturn="True"
+                                            TextWrapping="Wrap"
+                                            Text="{Binding Path=Messages}"
+                                            VerticalScrollBarVisibility="Auto"
+                                            materialDesign:HintAssist.Hint="Message" >
+                                            
+                                        </TextBox>
+                                        <Button
+                                            Grid.Row="1"
+                                            Style="{StaticResource MaterialDesignFlatDarkBgButton}" 
+                                            Command="{Binding Path=SendMessageCommand}" >
+                                            
+                                            Send
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+                            </materialDesign:PopupBox>
                         </Button>
                     </StackPanel>
-                    <materialDesign:Chip Grid.Row="1" Grid.Column="1" Background="LightGreen" Margin="25,0,0,0">
-                        Status: Active
-                    </materialDesign:Chip>
+                    <materialDesign:Chip Grid.Row="1" Grid.Column="1" Background="LightGreen" Margin="25,0,0,0" Content="{Binding Status}" />
                 </Grid>
             </materialDesign:Card>
         </DataTemplate>
@@ -60,7 +96,6 @@
                     <materialDesign:ColorZone
                         Mode="Standard"
                         Padding="8 4 8 4"
-                        Grid.Column="1"
                         HorizontalAlignment="Stretch"
                         CornerRadius="2"
                         Panel.ZIndex="1"
@@ -99,23 +134,199 @@
                 
                 <Separator
                   Style="{StaticResource MaterialDesignLightSeparator}" Background="LightGray"  />
-                <Grid
-                  Width="134">
-                                    <Button
-                    Style="{StaticResource MaterialDesignRaisedButton}"
-                    Height="50"
-                                        Background="CadetBlue"
-                    materialDesign:ButtonAssist.CornerRadius="10"
-                    ToolTip="MaterialDesignRaisedButton with Round Corners">
-                        <TextBlock Text="+ Add new user" />
-                    </Button>
-                </Grid>
-
-
-                <ListView ItemTemplate="{StaticResource PersonnelInfo}" x:Name="Users" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" />
-
                 
-              
+                    
+                    <materialDesign:DialogHost x:Name="CreateModal" CloseOnClickAway="True" HorizontalAlignment="Stretch" OverlayBackground="{x:Null}" >
+                        <materialDesign:DialogHost.DialogContent>
+                        <Grid MinWidth="530" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <StackPanel>
+
+                                <TextBlock  FontSize="22px" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center">Add new user/client</TextBlock>
+                                <Separator  Style="{StaticResource MaterialDesignLightSeparator}" Background="LightGray"  />
+                                <ProgressBar Visibility="Collapsed" x:Name="progress" IsEnabled="False" IsIndeterminate="True" />
+                                <Grid HorizontalAlignment="Stretch" Margin="0,10,0,50">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBox
+                                    Margin="30,20,30,0"
+                                        Grid.Column="0"
+                                        Grid.Row="0"
+                                      materialDesign:HintAssist.Hint="Firstname">
+                                        <TextBox.Text>
+                                            <Binding
+                                          Path="Firstname"
+                                                Mode="TwoWay"
+                                          UpdateSourceTrigger="PropertyChanged">
+                                            </Binding>
+                                        </TextBox.Text>
+
+                                    </TextBox>
+                                    <TextBox
+                                    Margin="30,20,30,0"
+                                        Grid.Column="1"
+                                        Grid.Row="0"
+                                      materialDesign:HintAssist.Hint="Surname">
+                                        <TextBox.Text>
+                                            <Binding
+                                          Path="Surname"
+                                                Mode="TwoWay"
+                                          UpdateSourceTrigger="PropertyChanged">
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBox
+                                   Margin="30,20,30,0"
+                                        Grid.Column="0"
+                                        Grid.Row="1"
+                                      materialDesign:HintAssist.Hint="Otherame">
+                                        <TextBox.Text>
+                                            <Binding
+                                          Path="Othername"
+                                                Mode="TwoWay"
+                                          UpdateSourceTrigger="PropertyChanged">
+                                            </Binding>
+                                        </TextBox.Text>
+
+                                    </TextBox>
+                                    <TextBox
+                                   Margin="30,20,30,0"
+                                        Grid.Column="1"
+                                        Grid.Row="1"
+                                      materialDesign:HintAssist.Hint="Phone">
+                                        <TextBox.Text>
+                                            <Binding
+                                          Path="Phone"
+                                                Mode="TwoWay"
+                                          UpdateSourceTrigger="PropertyChanged">
+                                            </Binding>
+                                        </TextBox.Text>
+
+                                    </TextBox>
+                                    <TextBox
+                                   Margin="30,20,30,0"
+                                        Grid.Column="0"
+                                        Grid.Row="2"
+                                      materialDesign:HintAssist.Hint="Alternative phone">
+                                        <TextBox.Text>
+                                            <Binding
+                                          Path="AltPhone"
+                                                Mode="TwoWay"
+                                          UpdateSourceTrigger="PropertyChanged">
+                                            </Binding>
+                                        </TextBox.Text>
+
+                                    </TextBox>
+                                    <TextBox
+                                    Margin="30,10,30,0"
+                                        Grid.Column="1"
+                                        Grid.Row="2"
+                                      materialDesign:HintAssist.Hint="Email">
+                                        <TextBox.Text>
+                                            <Binding
+                                          Path="Email"
+                                                Mode="TwoWay"
+                                          UpdateSourceTrigger="PropertyChanged">
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <ComboBox
+                                        x:Name="roleCombo"
+                                        Margin="30,20,30,0"
+                                        Grid.Column="0"
+                                        Grid.Row="3"
+                                        
+                                    materialDesign:HintAssist.Hint="Role">
+                                        <ComboBoxItem>
+                                            Administrator
+                                        </ComboBoxItem>
+                                        <ComboBoxItem>
+                                            Agent
+                                        </ComboBoxItem>
+                                        <ComboBoxItem>
+                                            Community health worker
+                                        </ComboBoxItem>
+                                        <ComboBoxItem>
+                                            VHT
+                                        </ComboBoxItem>
+                                        <ComboBoxItem>
+                                            Medical officer
+                                        </ComboBoxItem>
+                                    </ComboBox>
+                                    <TextBox
+                                    Margin="30,10,30,0"
+                                        Grid.Column="1"
+                                        Grid.Row="3"
+                                      materialDesign:HintAssist.Hint="Tribe">
+                                        <TextBox.Text>
+                                            <Binding
+                                          Path="Tribe"
+                                                Mode="TwoWay"
+                                          UpdateSourceTrigger="PropertyChanged">
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBox
+                                    Margin="30,10,30,0"
+                                        Grid.Column="0"
+                                        Grid.Row="4"
+                                      materialDesign:HintAssist.Hint="Language">
+                                        <TextBox.Text>
+                                            <Binding
+                                          Path="Language"
+                                                Mode="TwoWay"
+                                          UpdateSourceTrigger="PropertyChanged">
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <materialDesign:Chip Grid.Column="0" Grid.Row="5" Margin="30">
+                                        Add photo
+                                    </materialDesign:Chip>
+                                    <Button
+                                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                                        Width="100"
+                                        x:Name="Save_user"
+                                        Click="Save_user_Click"
+                                        Margin="0,10,0,0"
+                                        Grid.Column="0"
+                                        Grid.Row="6">
+                                        Save
+                                    </Button>
+                                    <Button
+                                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                                        Background="Red"
+                                        x:Name="cancel"
+                                        Width="100"
+                                         Margin="0,10,0,0"
+                                        Grid.Column="1"
+                                        Grid.Row="6"
+                                        Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                                        Close
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                        </materialDesign:DialogHost.DialogContent>
+                        <Button
+                            Width="120"
+                            Height="50"
+                            Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Content="Add new user" />
+                    </materialDesign:DialogHost>
+                 
+                <ListView ItemTemplate="{StaticResource PersonnelInfo}" x:Name="Users" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"  />
+
             </StackPanel>
         </Grid>
     </ScrollViewer>

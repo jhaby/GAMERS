@@ -41,17 +41,32 @@ namespace GAMERS_TECH
         {
             string user = Username.Text;
             string pswd = Password.Password;
-            UserData Userdata =await DBConnection.Login(user,pswd);
-            if(Userdata.Username != "none")
+            progress.Visibility = Visibility.Visible;
+
+            await Task.Run(() => LoginTask(user, pswd));
+
+            progress.Visibility = Visibility.Collapsed;
+            
+
+        }
+        private async Task LoginTask(string user, string pass)
+        {
+            UserData Userdata = await Helpers.LoadLoginInfo(user, pass);
+            Dispatcher.Invoke(() =>
             {
-                Home hm = new Home(Userdata);
-                hm.Show();
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show(Userdata.AccessType);
-            }
+               
+                if (Userdata != null)
+                {
+                    Home hm = new Home(Userdata);
+                    hm.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Unauthorised user");
+                }
+            });
+            
 
         }
 

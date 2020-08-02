@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using Dapper;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace GAMERS_TECH
 {
@@ -19,32 +22,20 @@ namespace GAMERS_TECH
         {
             
             var person = new List<PersonnelData>();
-            using (MySqlConnection Conn = new MySqlConnection(DBConnection.ConnString))
+            var sql = @"SELECT b.UserId,b.Firstname,b.Surname,b.Role,b.Email,b.Phone,b.PhotoPath,t.Status
+                    FROM bio_data b INNER JOIN authentication_table t ON b.UserId = t.UserId ";
+            using (var Conn = new MySqlConnection(DBConnection.ConnString))
             {
-                Conn.Open();
-                string loadstring = "SELECT * FROM bio_data";
-                MySqlCommand cmd = new MySqlCommand(loadstring, Conn);
-                MySqlDataReader rd = cmd.ExecuteReader();
+                 person =  Conn.Query<PersonnelData>(sql).ToList();
 
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        person.Add(new PersonnelData
-                        {
-                            Name = $"Name: {rd[1].ToString()} {rd[2].ToString()} {rd[3].ToString()}",
-                            Role = $"Role: {rd[4].ToString()}",
-                            Email = $"Email: {rd[8].ToString()}",
-                            Phone = $"Phone: {rd[6].ToString()}",
-                            Filepath = "pack://application:,,,/Resources/avatar2.png"
-
-                        });
-                    }
-                }
             }
 
-            
+
             return person;
+        }
+        public async void SendMessageAsync(string message)
+        {
+            await Task.Run(() => Helpers.SendMessage(message));
         }
     }
 }
