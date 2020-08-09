@@ -18,7 +18,6 @@ namespace GAMERS_TECH
                 {
                     var row = await connection.QueryAsync<T>(sql, parameter);
                     return row.ToList();
-
                 }
             
         }

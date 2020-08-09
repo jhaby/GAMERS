@@ -12,7 +12,7 @@
     <Grid>
         <ListView x:Name="cases" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
             <ListView.View>
-                <GridView>
+                <GridView x:Name="casesgrid">
                     <GridViewColumn
                             DisplayMemberBinding="{Binding Date}"
                             Header="Date" Width="100" />
@@ -20,7 +20,7 @@
                             DisplayMemberBinding="{Binding Time}"
                             Header="Time" Width="100" />
                     <GridViewColumn
-                                DisplayMemberBinding="{Binding Code}"
+                                DisplayMemberBinding="{Binding CaseId}"
                                 Header="Code" Width="100" />
                     <GridViewColumn
                             DisplayMemberBinding="{Binding Village}"
@@ -42,6 +42,7 @@
                                             Content="Handle"
                                             Background="GreenYellow"
                                             Width="100"
+                                            Command="{Binding Mycommand}"
                                             Margin="2,0" />
                                       
                                     <Button
@@ -53,7 +54,7 @@
                                     </Button>
                                     <Button
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
-                                        Width="100"
+                                        Width="105"
                                         Foreground="Red"
                                         ToolTip="MaterialDesignOutlinedButton">
                                         False alarm

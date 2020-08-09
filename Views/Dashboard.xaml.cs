@@ -19,53 +19,98 @@ namespace GAMERS_TECH
     /// </summary>
     public partial class Dashboard : Page
     {
-        UserData User;
+        
         StatusModel status;
+        private UserData User;
+        private List<AgentsModel> AgentsList;
 
         public Dashboard(UserData Userinfo,StatusModel stat,ConnService signalService)
         {
             InitializeComponent();
+            
+            status = stat;
 
             User = Userinfo;
-
             this.DataContext = User;
-            status = stat;
 
             signalService.StatusReceived += (StatusModel obj) =>
             {
-                if(obj.UserId == status.UserId)
+                int index = AgentsList.FindIndex(agent => agent.UserId.Equals(obj.UserId, StringComparison.Ordinal));
+                if (obj.UserId == status.UserId)
                 {
                     status.Status = obj.Status;
                     User.Status = obj.Status;
+                    AgentsList[index].Status = obj.Status;
+                    if (AgentsList[index].Status == "Status: Active")
+                        AgentsList[index].Background = Colors.LightGreen;
+                    else
+                        AgentsList[index].Background = Colors.LightPink;
+                }
+                else
+                {
+                    
+                    AgentsList[index].Status = obj.Status;
+                    if (AgentsList[index].Status == "Status: Active")
+                        AgentsList[index].Background = Colors.LightGreen;
+                    else
+                        AgentsList[index].Background = Colors.LightPink;
                 }
             };
             LoadHistory();
+            LoadAgents();
             StatusToggle.Unchecked += (o, e) =>
             {
                 status.UserId = User.UserId;
                 status.Status = "Unavailable";
-                User.Status = status.Status;
                 Task.Run(async () => {
                     await signalService.SendStatus(status);
                     await Helpers.UpdateStatus(status.Status, status.UserId);
                 });
+                User.Status = status.Status;
+                
+                
             };
 
             StatusToggle.Checked += (o, e) =>
             {
                 status.UserId = User.UserId;
                 status.Status = "Active";
-                User.Status = status.Status;
                 Task.Run(async () => {
                     await signalService.SendStatus(status);
                     await Helpers.UpdateStatus(status.Status, status.UserId);
-                    });
+                });
+
+                User.Status = status.Status;
+                
             };
 
+            if (User.Status == "Status: Active")
+                StatusToggle.IsChecked = true;
+            else
+                StatusToggle.IsChecked = false;
+
+        }
+
+        private void LoadAgents()
+        {
+           AgentsList = Helpers.LoadAgents().Result;
+            agentslist.ItemsSource = AgentsList;
+            foreach(var ag in AgentsList)
+            {
+                if(ag.Status == "Status: Active")
+                   ag.Background = Colors.LightGreen;
+                else
+                   ag.Background = Colors.LightPink;
+            }
         }
 
         private void LoadHistory()
         {
+            List<HistoryModel> _history = new List<HistoryModel>();
+
+            _history = Helpers.LoadHistoryAsync("dashboard").Result;
+
+            history.ItemsSource = _history;
             
         }
     }

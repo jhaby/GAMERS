@@ -20,19 +20,19 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn
-                            DisplayMemberBinding="{Binding Date}"
+                            DisplayMemberBinding="{Binding DateTime}"
                             Header="Date" Width="100" />
                             <GridViewColumn
-                                DisplayMemberBinding="{Binding Code}"
+                                DisplayMemberBinding="{Binding CaseId}"
                                 Header="Code" Width="100" />
                             <GridViewColumn
                                 DisplayMemberBinding="{Binding Description}"
                                 Header="Description" Width="150" />
                             <GridViewColumn
-                                DisplayMemberBinding="{Binding Agent}"
+                                DisplayMemberBinding="{Binding AgentId}"
                                 Header="Agent" Width="100" />
                             <GridViewColumn
-                                DisplayMemberBinding="{Binding VHT}"
+                                DisplayMemberBinding="{Binding VHTCode}"
                                 Header="VHT code" Width="100" />
                             <GridViewColumn
                                 DisplayMemberBinding="{Binding Status}"

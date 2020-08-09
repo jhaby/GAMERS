@@ -3,20 +3,29 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 
-namespace GAMERS_TECH.Commands
+namespace GAMERS_TECH
 {
-    public class ConnServiceCommand : ICommand
+    public class RespondCommand : ICommand
     {
-        public event EventHandler CanExecuteChanged;
 
+        Action<object> executeMethod;
+        Func<object, bool> canExecuteMethod;
+
+        public RespondCommand(Action<object> executeMethod, Func<object, bool> canExecuteMethod)
+        {
+            this.executeMethod = executeMethod;
+            this.canExecuteMethod = canExecuteMethod;
+        }
         public bool CanExecute(object parameter)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public void Execute(object parameter)
         {
-            throw new NotImplementedException();
+            executeMethod(parameter);
         }
+
+        public event EventHandler CanExecuteChanged;
     }
 }

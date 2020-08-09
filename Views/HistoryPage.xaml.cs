@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,22 +19,12 @@ namespace GAMERS_TECH
     /// </summary>
     public partial class HistoryPage : Page
     {
+        List<HistoryModel> _history;
         public HistoryPage()
         {
             InitializeComponent();
-            List<HistoryList> Items = new List<HistoryList>()
-            {
-                new HistoryList
-                {
-                    Date = DateTime.Now.ToLongDateString(),
-                    Code = "#349",
-                    Description="Labour code",
-                    Agent = "John Willock",
-                    VHT = "453",
-                    Status = "Closed"
-                }
-            };
-            history.ItemsSource = Items;
+            _history = Helpers.LoadHistoryAsync("history").Result;
+            history.ItemsSource = _history;
         }
     }
     class HistoryList

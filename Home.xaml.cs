@@ -37,7 +37,7 @@ namespace GAMERS_TECH
             };
 
             connection = new HubConnectionBuilder()
-               .WithUrl("http://localhost:5000/updates")
+               .WithUrl("http://localhost:59729/updates")
                .Build();
 
             connection.Closed += async (error) =>
@@ -106,9 +106,10 @@ namespace GAMERS_TECH
 
         private void CasesClicked(object sender, RoutedEventArgs e)
         {
-            body.NavigationService.Navigate(new CasesPage());
+            body.NavigationService.Navigate(new CasesPage(User,signalService));
             heading.Text = "Alerts ledger";
         }
+
 
         private void LibraryClicked(object sender, RoutedEventArgs e)
         {

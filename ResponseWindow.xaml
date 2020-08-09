@@ -1,0 +1,123 @@
+﻿<Window x:Class="GAMERS_TECH.ResponseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GAMERS_TECH"
+        xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Response " Height="550" Width="1000" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" WindowState="Maximized" WindowStyle="SingleBorderWindow">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="210"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <materialDesign:Card
+          Background="MidnightBlue"
+          Foreground="White"
+          Width="auto"
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.RowSpan="2">
+            <StackPanel>
+                <TextBlock Text="Time" FontSize="24px" TextAlignment="Center" x:Name="Ctime"/>
+                <materialDesign:ColorZone
+                        Mode="Standard"
+                        Padding="8 4 8 4"
+                        HorizontalAlignment="Stretch"
+                        CornerRadius="2"
+                        Panel.ZIndex="1"
+                        Margin="20 20 20 0"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition
+                                    Width="Auto" />
+                            <ColumnDefinition
+                                     Width="*" />
+                            <ColumnDefinition
+                                    Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                                    Style="{DynamicResource MaterialDesignToolButton}">
+                            <materialDesign:PackIcon
+                                  Kind="Magnify"
+                                  Opacity=".56" />
+                        </Button>
+                        <TextBox
+                                Grid.Column="1"
+                                Margin="8 0 0 0"
+                                materialDesign:HintAssist.Hint="search"
+                                materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                BorderThickness="0"
+                                MinWidth="200"
+                                x:Name="SearchUser"
+                                VerticalAlignment="Center" />
+                        <Button
+                                Style="{DynamicResource MaterialDesignToolButton}"
+                                Grid.Column="2"/>
+                    </Grid>
+                </materialDesign:ColorZone>
+                <TextBlock Text="Emergency response team" HorizontalAlignment="Stretch" FontSize="16" Padding="10" Background="CadetBlue" Margin="0,10,0,0"/>
+                
+                <TextBlock Text="Team ID:" FontSize="15" Margin="5" x:Name="teamId"/>
+                <TextBlock Text="Current location:" FontSize="15" Margin="5" x:Name="teamClocation"/>
+                <TextBlock Text="Contact:" FontSize="15" Margin="5" x:Name="teamphone"/>
+                <TextBlock Text="Means:" FontSize="15" Margin="5" x:Name="teamMeans"/>
+
+                <Separator/>
+
+                <TextBlock Text="Community health worker info" HorizontalAlignment="Stretch" FontSize="16" Padding="10" Background="CadetBlue" Margin="0,10,0,0"/>
+            </StackPanel>
+        </materialDesign:Card>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Background="#FFD5D5D6" >
+            <TextBlock x:Name="location" Margin="20,0,0,0" Text="Location" VerticalAlignment="Center" FontSize="20px" FontWeight="Bold"/>
+            <Button Content="Close alert" Margin="20,0,0,0"/>
+            <Button Content="Forward case" Margin="10,0,0,0" />
+            <Button x:Name="aerialview" Content="Aerial view" Margin="10,0,0,0" />
+            <Button x:Name="roadview" Content="Road view" Margin="10,0,0,0" />
+            <Button Background="CadetBlue" Content="Restart response" HorizontalAlignment="Right" Margin="10,0,0,0" />
+        </StackPanel>
+        <m:Map Mode="Road" x:Name="map" CredentialsProvider="knGyCHkh5YDZZIffjKoD~lHfJoE3cTvL2pW4atwrAPA~AirXYm1XmeQqBCpMwCnbBbm1SPliIihzEBeBTtJDxZxf7jcggjHGqK_sny2GpcBm" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Center="2.526920, 34.658950" ZoomLevel="16">
+            <m:Pushpin x:Name="pinned"/>
+        </m:Map>
+        <StackPanel Grid.Column="2" Grid.Row="1">
+            <materialDesign:Card Background="White" Foreground="Black" Width="auto" Height="180" Margin="10" Opacity="0.7">
+                <StackPanel>
+                    <TextBlock Text="VHT info" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="18" HorizontalAlignment="Stretch" Background="MidnightBlue" Height="30"/>
+                    <materialDesign:Chip HorizontalAlignment="Center" Margin="5" x:Name="VHTinfo" Content="VHT name">
+                        <materialDesign:Chip.Icon>                             
+                            <Image 
+                                 Source="pack://application:,,,/Resources/avatar2.png" />
+                        </materialDesign:Chip.Icon>
+                    </materialDesign:Chip>
+                    <TextBlock HorizontalAlignment="Center" x:Name="VHTphone" Margin="5" FontSize="15px" Text="Phone: 07801234235"/>
+                    <TextBlock HorizontalAlignment="Center" x:Name="VHTvillage" Margin="5" FontSize="15px" Text="Village: Jalawo"/>
+                    <TextBlock HorizontalAlignment="Center" x:Name="Kinsphone" Margin="5" FontSize="15px" Text="Kin's Phone: 07801234235" TextWrapping="WrapWithOverflow"/>
+                </StackPanel>
+            </materialDesign:Card>
+            
+            <materialDesign:Card Background="White" Foreground="Black" Width="auto" Height="180" Margin="10,20,10,10" Opacity="0.7" >
+                
+                    <StackPanel Margin="5">
+                    <TextBlock Text="Progress info" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="18" HorizontalAlignment="Stretch" Background="MidnightBlue" Height="30"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="progresslog">
+                            <TextBlock FontStyle="Italic" Text="Starting response protocol..."></TextBlock>
+                        </StackPanel>
+                    </ScrollViewer>
+                    </StackPanel>
+               
+            </materialDesign:Card>
+           
+        </StackPanel>
+    
+    </Grid>
+</Window>

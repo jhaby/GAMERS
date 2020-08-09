@@ -14,13 +14,16 @@
             <ListViewItem VerticalAlignment="Center" Padding="8">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:Chip
-                                    Content="{Binding Name}">
+                                    Content="{Binding Username}">
                         <materialDesign:Chip.Icon>
                             <Image
-                                     Source="pack://application:,,,/Resources/avatar2.png" />
+                                     Source="{Binding Photo}" />
                         </materialDesign:Chip.Icon>
                     </materialDesign:Chip>
-                    <materialDesign:Chip Background="#FFF99393" Margin="100,0,0,0" Content="{Binding Status}">
+                    <materialDesign:Chip Margin="100,0,0,0" Content="{Binding Status}">
+                        <materialDesign:Chip.Background>
+                            <SolidColorBrush Color="{Binding Background}"/>
+                        </materialDesign:Chip.Background>
                     </materialDesign:Chip>
                     <DockPanel HorizontalAlignment="Stretch" MinWidth="400">
                         <materialDesign:PopupBox
@@ -190,10 +193,7 @@
                             Company Agent Status
                         </TextBlock>
                     </Border>
-                    <ListView>
-                       
-                        
-                    </ListView>
+                    <ListView x:Name="agentslist" ItemTemplate="{StaticResource ResourceKey=AgentsList}"/>
 
 
 
@@ -210,14 +210,17 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn
-                            DisplayMemberBinding="{Binding Date}"
-                            Header="Date" Width="100" />
+                            DisplayMemberBinding="{Binding DateTime}"
+                            Header="Date" Width="160" />
                                 <GridViewColumn
-                                DisplayMemberBinding="{Binding Code}"
+                                DisplayMemberBinding="{Binding CaseId}"
                                 Header="Code" Width="100" />
                                 <GridViewColumn
                                 DisplayMemberBinding="{Binding Description}"
-                                Header="Description" Width="400" />
+                                Header="Description" Width="200" />
+                                <GridViewColumn
+                                DisplayMemberBinding="{Binding Village}"
+                                Header="Location" Width="120" />
                                 <GridViewColumn
                                 Header="Options">
                                     <GridViewColumn.CellTemplate>

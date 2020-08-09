@@ -14,7 +14,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <m:Map Mode="Road" CredentialsProvider="knGyCHkh5YDZZIffjKoD~lHfJoE3cTvL2pW4atwrAPA~AirXYm1XmeQqBCpMwCnbBbm1SPliIihzEBeBTtJDxZxf7jcggjHGqK_sny2GpcBm" Grid.Row="0" Center="2.526920, 34.658950" ZoomLevel="16">
-            
+            <m:Pushpin Location="2.526920, 34.658950"/>
+           
         </m:Map>
     </Grid>
 </Page>

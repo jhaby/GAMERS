@@ -56,4 +56,8 @@
     <Folder Include="Assets\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Downloads\GSM-master\GSMLib\GSMLib.csproj" />
+  </ItemGroup>
+
 </Project>
