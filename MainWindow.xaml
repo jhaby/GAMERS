@@ -35,6 +35,7 @@
                     <TextBlock Text="Login" TextAlignment="Center" FontSize="20" FontWeight="Bold" />
                     <ComboBox x:Name="Username" Margin="25,25,25,5" Style="{DynamicResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="Select user">
                         <ComboBoxItem Content="Aloysius"/>
+                        <ComboBoxItem Content="Jeremiah"/>
                         <ComboBoxItem Content="Attending Two"/>
                         <ComboBoxItem Content="Attending Three"/>
                     </ComboBox>

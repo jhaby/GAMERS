@@ -123,7 +123,7 @@
 
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="PlaylistStar" MinWidth="70" MinHeight="70"/>
-                            <TextBlock  FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" >2nd</TextBlock>
+                            <TextBlock  FontSize="40px" TextAlignment="Center" HorizontalAlignment="Left" Width="100" Text="{Binding Rank}" />
 
                         </StackPanel>
                         <TextBlock  FontSize="15px" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" >Position in ledger</TextBlock>

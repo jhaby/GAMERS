@@ -26,13 +26,18 @@ namespace GAMERS_TECH
         private List<PersonnelData> UserList;
         PersonnelInfoViewModel persons;
         CreateUserData createUser;
+        private static ConnService signalService;
+        private TextBox txtBox;
+        private static string msg;
+        private Button sendBtn;
 
         public Personnelinfo(PersonnelInfoViewModel personnel, ConnService Sservice)
 
         {
             InitializeComponent();
             createUser = new CreateUserData();
-            
+            signalService = Sservice;
+
             UserList = new List<PersonnelData>();
             persons = personnel ;
             UserList = persons.GetData();
@@ -47,6 +52,20 @@ namespace GAMERS_TECH
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Users.ItemsSource);
             view.Filter = UseFilter;
 
+            signalService.SendingSuccess += (string response) =>
+              {
+                  MessageBox.Show(response);
+
+              };
+
+        }
+
+        public static async Task SendSms(SMSDetails sms)
+        {
+            
+            sms.Message = msg;
+            await signalService.SendSMS(sms);
+            
         }
 
         private bool UseFilter(object obj)
@@ -87,7 +106,30 @@ namespace GAMERS_TECH
             });
 
         }
-       
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            txtBox = sender as TextBox;
+            msg = txtBox.Text;
+           
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            sendBtn = sender as Button;
+            sendBtn.IsEnabled = false;
+
+            Task.Run(async delegate
+            {
+                await Task.Delay(2000);
+                Dispatcher.Invoke(() =>
+                {
+                    txtBox.Text = "";
+                    sendBtn.IsEnabled = true;
+                });
+            });
+
+        }
     }
    
 }

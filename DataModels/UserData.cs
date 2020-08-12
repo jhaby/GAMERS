@@ -5,10 +5,11 @@ using System.Text;
 
 namespace GAMERS_TECH
 {
-    public class UserData: INotifyPropertyChanged
+    public class UserData : INotifyPropertyChanged
     {
         private string status;
         private string language;
+        private string rank;
 
         public string UserId { get; set; }
         public string Username { get; set; }
@@ -19,7 +20,16 @@ namespace GAMERS_TECH
         public int MissedAlerts { get; set; }
         public string Firstname { get; set; }
         public string Surname { get; set; }
-        public string Language { get =>"Language: "+ language; set => language = value; }
+        public string Language { get => "Language: " + language; set => language = value; }
+
+        public string Rank { get => rank;
+
+            set
+            {
+                rank = value;
+                OnPropertyChanged("Rank");
+            }
+        }
 
         public string Status
         {
@@ -44,7 +54,7 @@ namespace GAMERS_TECH
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged( string member)
+        private void OnPropertyChanged(string member)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(member));
         }
@@ -62,5 +72,13 @@ namespace GAMERS_TECH
         public string Role { get; set; }
         public string Village { get; set; }
         public string Kin { get; set; }
+    }
+
+    public class UsersRank
+    {
+        public string UserID { get; set; }
+        public int Position { get; set; }
+        public string ConnId { get; set; }
+
     }
 }

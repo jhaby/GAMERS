@@ -66,7 +66,8 @@
                                             Grid.Row="0"
                                             AcceptsReturn="True"
                                             TextWrapping="Wrap"
-                                            Text="{Binding Path=Messages}"
+                                            KeyDown="TextBox_KeyDown"
+                                            Text="{Binding Messages, Mode=TwoWay}"
                                             VerticalScrollBarVisibility="Auto"
                                             materialDesign:HintAssist.Hint="Message" >
                                             
@@ -74,8 +75,8 @@
                                         <Button
                                             Grid.Row="1"
                                             Style="{StaticResource MaterialDesignFlatDarkBgButton}" 
+                                            Click="Button_Click"
                                             Command="{Binding Path=SendMessageCommand}" >
-                                            
                                             Send
                                         </Button>
                                     </Grid>

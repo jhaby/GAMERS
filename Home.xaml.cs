@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,6 +23,8 @@ namespace GAMERS_TECH
         ConnService signalService;
         PersonnelInfoViewModel persons;
         StatusModel stat;
+        public List<AgentsModel> AgentsList;
+        List<UsersRank> Usersrank;
 
         public  Home(UserData Userinfo)
         {
@@ -30,6 +33,7 @@ namespace GAMERS_TECH
             Loaded += Home_Loaded;
             NameChip.Content = "Hi, "+ User.Firstname+" "+ User.Surname;
 
+            Usersrank = new List<UsersRank>();
             stat = new StatusModel
             {
                 UserId = User.UserId,
@@ -52,10 +56,44 @@ namespace GAMERS_TECH
             signalService.StatusReceived += Cos_StatusReceived;
 
             Task.Run(async()=> await ServerConnect());
-   
+
+            LoadAgents();
             persons = new PersonnelInfoViewModel();
+           
+            signalService.DisconnectUser += (string obj) =>
+              {
+                  
+                  Task.Run(async() =>
+                  {
+                      await signalService.SendStatus(stat);
+                      await Helpers.UpdateStatus(stat.Status, stat.UserId);
+                  });
+              };
+
+            this.Closing += MainWindow_Closing;
+
 
         }
+
+        private async void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+          Task.Run(() =>
+             {
+                 Dispatcher.Invoke(() =>
+                 {
+                     signalService.Disconnect();
+                 });
+
+             });
+            
+            stat.Status = "Unavailable";
+            await signalService.SendStatus(stat);
+            await Helpers.UpdateStatus(stat.Status, stat.UserId);
+
+        }
+
+        
+
         public async Task ServerConnect()
         {
             try
@@ -70,6 +108,19 @@ namespace GAMERS_TECH
             
         }
 
+        private void LoadAgents()
+        {
+            AgentsList = Helpers.LoadAgents().Result;
+            
+            foreach (var ag in AgentsList)
+            {
+                if (ag.Status == "Status: Active")
+                    ag.Background = Colors.LightGreen;
+                else
+                    ag.Background = Colors.LightPink;
+            }
+        }
+
         private void Cos_StatusReceived(StatusModel obj)
         {
             stat.Status = obj.Status;
@@ -77,12 +128,12 @@ namespace GAMERS_TECH
 
         private void Home_Loaded(object sender, RoutedEventArgs e)
         {
-            body.NavigationService.Navigate(new Dashboard(User,stat,signalService));
+            body.NavigationService.Navigate(new Dashboard(User,stat,signalService,AgentsList));
         }
 
         private void DashboardClicked(object sender, RoutedEventArgs e)
         {
-            body.NavigationService.Navigate(new Dashboard(User,stat,signalService));
+            body.NavigationService.Navigate(new Dashboard(User,stat,signalService,AgentsList));
             heading.Text = "Dashboard";
         }
 

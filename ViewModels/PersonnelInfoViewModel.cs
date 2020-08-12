@@ -12,9 +12,8 @@ namespace GAMERS_TECH
     public class PersonnelInfoViewModel
     {
         public List<PersonnelData> List { get; private set; }
-
         public PersonnelInfoViewModel()
-        {
+        { 
             List = GetData();
 
         }
@@ -24,12 +23,11 @@ namespace GAMERS_TECH
             var person = new List<PersonnelData>();
             var sql = @"SELECT b.UserId,b.Firstname,b.Surname,b.Role,b.Email,b.Phone,b.PhotoPath,t.Status
                     FROM bio_data b INNER JOIN authentication_table t ON b.UserId = t.UserId ";
-            using (var Conn = new MySqlConnection(DBConnection.ConnString))
+            using (var Conn = new MySqlConnection(Helpers.connectionString))
             {
                  person =  Conn.Query<PersonnelData>(sql).ToList();
 
             }
-
 
             return person;
         }

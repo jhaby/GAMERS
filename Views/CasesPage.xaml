@@ -10,7 +10,7 @@
       Title="CasesPage" Background="White">
 
     <Grid>
-        <ListView x:Name="cases" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
+        <ListView x:Name="cases" ItemsSource="{Binding Items}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
             <ListView.View>
                 <GridView x:Name="casesgrid">
                     <GridViewColumn

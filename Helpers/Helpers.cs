@@ -9,7 +9,7 @@ namespace GAMERS_TECH
 {
     public class Helpers
     {   
-        private static readonly string connectionString = "server=localhost;user=root;database=gamers_356;port=3306;password=255Admin";
+        public static readonly string connectionString = "server=localhost;user=root;database=gamers_356;port=3306;password=255Admin";
 
         /*Section for loading information from database tables*/
 

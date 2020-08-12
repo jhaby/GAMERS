@@ -21,69 +21,89 @@ namespace GAMERS_TECH
         private static ConnService sService;
         private CasesViewModel Items;
         private UserData User;
-        private List<CasesModel> list;
 
         public CasesPage(UserData userinfo, ConnService signalService)
         {
             InitializeComponent();
+            sService = signalService;
+
             Items = new CasesViewModel(userinfo);
             User = userinfo;
-            list = Items.ItemList(userinfo);
+
             this.DataContext = Items;
-            sService = signalService;
-            cases.ItemsSource = list;
+
+            sService.AlertReceived += SService_AlertReceived;
+
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(cases.ItemsSource);
+            
 
             sService.HandleEventReceived += SService_HandleEventReceived;
+        }
+        /*refresh cases ledger on alert broadcast receive*/
+        private void SService_AlertReceived(CasesModel obj)
+        {
+            Items.Reload(User);
+            CollectionViewSource.GetDefaultView(cases.ItemsSource).Refresh();
+
         }
 
         private void SService_HandleEventReceived(Sender obj)
         {
-            int index = list.FindIndex(ag => ag.CaseId.Equals(obj.CaseId, StringComparison.OrdinalIgnoreCase));
-            list = list.Except(list.Where(x => x.CaseId == obj.CaseId)).ToList();
-            
-            
-            
+            Items.Reload(User);
+            CollectionViewSource.GetDefaultView(cases.ItemsSource).Refresh();
         }
-
-        public static async Task UserID(Sender s)
+        public static async Task SendSms(Sender sender)
         {
-            
-            await sService.HandleAlert(s);
+            await sService.HandleAlert(sender);
         }
+       
     }
 
 
 
 
-    public class CasesViewModel
+    public class CasesViewModel : INotifyPropertyChanged
     {
-        List<CasesModel> Items;
+        private List<CasesModel> items;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string member)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(member));
+        }
+
+        public List<CasesModel> Items { get => items;
+
+            set
+            {
+                items = value;
+                OnPropertyChanged("Items");
+            }
+        }
 
         public CasesViewModel(UserData user)
         {
-            Items = Helpers.LoadCases().Result;
-
-            foreach(var s in Items)
-            {
-                s.AgentId = user.UserId;
-                
-            }
+            Items = ItemList(user);
         }
 
         public List<CasesModel> ItemList(UserData user)
         {
             Items = Helpers.LoadCases().Result;
 
-            foreach(var s in Items)
+            foreach (var s in Items)
             {
                 s.AgentId = user.UserId;
-                
+
             }
 
             return Items;
 
         }
-        
+        public void Reload(UserData user)
+        {
+            Items = ItemList(user);
+        }
+
     }
 
 
@@ -100,6 +120,7 @@ namespace GAMERS_TECH
         private string status;
         private string category;
         private ICommand mycommand;
+        public ConnService signalService { get; set; }
 
         public string AgentId { get; set; }
 
@@ -149,7 +170,8 @@ namespace GAMERS_TECH
                 CaseId = caseId,
                 Response = "accept"
             };
-            await CasesPage.UserID(sender);
+
+            await CasesPage.SendSms(sender);
             string[] details = { caseId, AgentId, Location, village, vHTCode, dateTime.ToString(), description };
             ResponseWindow response = new ResponseWindow(details);
             response.Show();

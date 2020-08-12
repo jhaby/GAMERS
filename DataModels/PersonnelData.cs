@@ -19,13 +19,15 @@ namespace GAMERS_TECH
         private string photoPath;
         private string status;
         private string message;
+        private ICommand sendMessageCommand;
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string member)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(member));
         }
-        public string Message {
+        public string Message
+        {
             get
             {
                 return message;
@@ -176,15 +178,32 @@ namespace GAMERS_TECH
                 }
             }
         }
+
         public ICommand SendMessageCommand
         {
-            get; private set;
-        }
-        void SendCommand(string m)
-        {
-            if (message != null)
+            get
             {
+                if (sendMessageCommand == null)
+                    sendMessageCommand = new RespondCommand(ExceuteMethod, CanExecute);
+                return sendMessageCommand;
             }
+        }
+
+        private bool CanExecute(object arg)
+        {
+            return true;
+        }
+
+        private async void ExceuteMethod(object obj)
+        {
+
+            SMSDetails sms = new SMSDetails()
+            {
+                Message = message,
+                Number = phone
+            };
+
+            await Personnelinfo.SendSms(sms);
         }
     }
 

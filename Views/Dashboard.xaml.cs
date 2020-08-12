@@ -22,9 +22,9 @@ namespace GAMERS_TECH
         
         StatusModel status;
         private UserData User;
-        private List<AgentsModel> AgentsList;
+        List<UsersRank> userRank;
 
-        public Dashboard(UserData Userinfo,StatusModel stat,ConnService signalService)
+        public Dashboard(UserData Userinfo,StatusModel stat,ConnService signalService,List<AgentsModel> AgentsList)
         {
             InitializeComponent();
             
@@ -32,6 +32,29 @@ namespace GAMERS_TECH
 
             User = Userinfo;
             this.DataContext = User;
+
+           userRank = new List<UsersRank>();
+
+            for (var i = 0; i < AgentsList.Count; i++)
+            {
+                if (AgentsList[i].Status == "Status: Active")
+                {
+                    userRank.Add(new UsersRank
+                    {
+                        UserID = AgentsList[i].UserId,
+                        Position = AgentsList[i].Rank,
+                        ConnId = "null"
+                    });
+                }
+            }
+
+            signalService.NewUser += (string obj) =>
+            {
+                Task.Run(async () =>
+                {
+                    await signalService.ConnectionSync(User.UserId, userRank);
+                });
+            };
 
             signalService.StatusReceived += (StatusModel obj) =>
             {
@@ -57,7 +80,26 @@ namespace GAMERS_TECH
                 }
             };
             LoadHistory();
-            LoadAgents();
+            agentslist.ItemsSource = AgentsList;
+
+            signalService.Ranking += (List<UsersRank> obj) =>
+            {
+                int index = obj.FindIndex(ag => ag.UserID.Equals(User.UserId, StringComparison.Ordinal));
+                User.Rank = obj[index].Position.ToString();
+                
+                for (var i=0;i< AgentsList.Count;i++){
+                    int pos = obj.FindIndex(ag => ag.UserID.Equals(AgentsList[i].UserId, StringComparison.Ordinal));
+                    AgentsList[i].Rank = obj[pos].Position;
+                }
+                for (var i = 0; i < userRank.Count; i++)
+                {
+                    int pos = obj.FindIndex(ag => ag.UserID.Equals(userRank[i].UserID, StringComparison.Ordinal));
+                    userRank[i].Position = obj[pos].Position;
+                }
+            };
+
+
+
             StatusToggle.Unchecked += (o, e) =>
             {
                 status.UserId = User.UserId;
@@ -65,10 +107,15 @@ namespace GAMERS_TECH
                 Task.Run(async () => {
                     await signalService.SendStatus(status);
                     await Helpers.UpdateStatus(status.Status, status.UserId);
+
+                    int index = userRank.FindIndex(ag => ag.UserID.Equals(User.UserId, StringComparison.Ordinal));
+                    userRank.RemoveAt(index);
+                    
+                    await signalService.ReorderList("remove",index, userRank);
+                    User.Rank = "";
                 });
                 User.Status = status.Status;
-                
-                
+
             };
 
             StatusToggle.Checked += (o, e) =>
@@ -78,6 +125,14 @@ namespace GAMERS_TECH
                 Task.Run(async () => {
                     await signalService.SendStatus(status);
                     await Helpers.UpdateStatus(status.Status, status.UserId);
+
+                    userRank.Add(new UsersRank
+                    {
+                        UserID = User.UserId,
+                        ConnId = ""
+                    });
+                    await signalService.ReorderList("add", userRank.Count, userRank);
+
                 });
 
                 User.Status = status.Status;
@@ -89,20 +144,13 @@ namespace GAMERS_TECH
             else
                 StatusToggle.IsChecked = false;
 
+            
+
         }
 
-        private void LoadAgents()
-        {
-           AgentsList = Helpers.LoadAgents().Result;
-            agentslist.ItemsSource = AgentsList;
-            foreach(var ag in AgentsList)
-            {
-                if(ag.Status == "Status: Active")
-                   ag.Background = Colors.LightGreen;
-                else
-                   ag.Background = Colors.LightPink;
-            }
-        }
+        
+
+       
 
         private void LoadHistory()
         {

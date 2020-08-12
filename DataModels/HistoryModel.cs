@@ -48,8 +48,18 @@ namespace GAMERS_TECH
         private string photo;
         private string userId;
         private Color background;
+        private int rank;
 
-        public string UserId {
+        public int Rank { get => rank;
+
+            set
+            {
+                rank = value;
+                OnpropertyChange("Rank");
+            }
+        }
+        public string UserId
+        {
             get
             {
                 return userId;
@@ -76,7 +86,7 @@ namespace GAMERS_TECH
         {
             get
             {
-                return "Status: "+ status;
+                return "Status: " + status;
             }
             set
             {

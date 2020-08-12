@@ -13,8 +13,12 @@ namespace GAMERS_TECH
         private readonly HubConnection _connection;
         public event Action<StatusModel> StatusReceived;
         public event Action<Sender> HandleEventReceived;
-        public event Action<Sender> AlertReceived;
-        public event Action<SMSDetails> SendingSuccess;
+        public event Action<CasesModel> AlertReceived;
+        public event Action<string> SendingSuccess;
+        public event Action<string> NewUser;
+        public event Action<List<UsersRank>> Ranking;
+        public event Action<string> DisconnectUser;
+
         public ConnService(HubConnection connection)
         {
             this._connection = connection;
@@ -23,15 +27,23 @@ namespace GAMERS_TECH
 
             _connection.On<StatusModel>("ReceiveStatus", (status) => StatusReceived?.Invoke(status));
             _connection.On<Sender>("UpdateAlerts", (sender) => HandleEventReceived?.Invoke(sender));
-            _connection.On<Sender>("AlertBroadcast", (sender) => AlertReceived?.Invoke(sender));
-            _connection.On<SMSDetails>("SMSSendingSuccess", (sms) => SendingSuccess?.Invoke(sms));
+            _connection.On<CasesModel>("AlertBroadcast", (sender) => AlertReceived?.Invoke(sender));
+            _connection.On<string>("SMSSendingSuccess", (Sid) => SendingSuccess?.Invoke(Sid));
+            _connection.On<string>("NewUserConnected", (connid) => NewUser?.Invoke(connid));
+            _connection.On<List<UsersRank>>("UsersRank", (rank) => Ranking?.Invoke(rank));
+            _connection.On<string>("DisconnectUser", (connId) => DisconnectUser?.Invoke(connId));
         }
+
 
 
         /* All below are methods broadcasted to the server via signalR*/
         public async Task Connect()
         {
             await _connection.StartAsync();
+        }
+        public void  Disconnect()
+        {
+            _connection.StopAsync();
         }
         public async Task SendStatus(StatusModel status)
         {
@@ -44,6 +56,14 @@ namespace GAMERS_TECH
         public async Task SendSMS(SMSDetails sms)
         {
             await _connection.SendAsync("SendSMS", sms);
+        }
+        public async Task ConnectionSync(string UserId, List<UsersRank> UsersList)
+        {
+            await _connection.SendAsync("NewUserStatus", UserId, UsersList);
+        }
+        public async Task ReorderList(string order,int pos,List<UsersRank> UsersList)
+        {
+            await _connection.SendAsync("ReorderRanks",order,pos, UsersList);
         }
     }
 
