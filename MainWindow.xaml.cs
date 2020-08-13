@@ -51,22 +51,31 @@ namespace GAMERS_TECH
         }
         private async Task LoginTask(string user, string pass)
         {
-            UserData Userdata = await Helpers.LoadLoginInfo(user, pass);
-            Dispatcher.Invoke(() =>
+            try
             {
-               
-                if (Userdata != null)
+                UserData Userdata = await Helpers.LoadLoginInfo(user, pass);
+                Dispatcher.Invoke(() =>
                 {
-                    Home hm = new Home(Userdata);
-                    hm.Show();
-                    this.Close();
-                }
-                else
+
+                    if (Userdata != null)
+                    {
+                        Home hm = new Home(Userdata);
+                        hm.Show();
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Unauthorised user");
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                Dispatcher.Invoke(() =>
                 {
-                    MessageBox.Show("Unauthorised user");
-                }
-            });
-            
+                    MessageBox.Show(e.Message);
+                });
+            }
 
         }
 

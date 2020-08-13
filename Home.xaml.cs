@@ -41,7 +41,7 @@ namespace GAMERS_TECH
             };
 
             connection = new HubConnectionBuilder()
-               .WithUrl("http://localhost:59729/updates")
+               .WithUrl("http://localhost:5000/updates")
                .Build();
 
             connection.Closed += async (error) =>

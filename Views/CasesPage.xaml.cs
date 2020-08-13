@@ -22,7 +22,7 @@ namespace GAMERS_TECH
         private CasesViewModel Items;
         private UserData User;
 
-        public CasesPage(UserData userinfo, ConnService signalService)
+        public CasesPage (UserData userinfo, ConnService signalService)
         {
             InitializeComponent();
             sService = signalService;
@@ -44,6 +44,25 @@ namespace GAMERS_TECH
         {
             Items.Reload(User);
             CollectionViewSource.GetDefaultView(cases.ItemsSource).Refresh();
+            
+            if (User.Rank == "1")
+            {
+                int index = Items.Items.FindIndex(agent => agent.CaseId.Equals(obj.CaseId, StringComparison.Ordinal));
+                Sender sender = new Sender()
+                {
+                    UserId = User.UserId,
+                    CaseId = obj.CaseId,
+                    Response = "accept"
+                };
+                Task.Run(async () =>
+                {
+                    await SendHandledAlert(sender);
+                });
+                
+                string[] details = { obj.CaseId, User.UserId, Items.Items[index].Location, Items.Items[index].Village, Items.Items[index].VHTCode, Items.Items[index].DateTime.ToString(), Items.Items[index].Description };
+                ResponseWindow response = new ResponseWindow(details);
+                response.Show();
+            }
 
         }
 
@@ -52,7 +71,7 @@ namespace GAMERS_TECH
             Items.Reload(User);
             CollectionViewSource.GetDefaultView(cases.ItemsSource).Refresh();
         }
-        public static async Task SendSms(Sender sender)
+        public static async Task SendHandledAlert(Sender sender)
         {
             await sService.HandleAlert(sender);
         }
@@ -171,7 +190,7 @@ namespace GAMERS_TECH
                 Response = "accept"
             };
 
-            await CasesPage.SendSms(sender);
+            await CasesPage.SendHandledAlert(sender);
             string[] details = { caseId, AgentId, Location, village, vHTCode, dateTime.ToString(), description };
             ResponseWindow response = new ResponseWindow(details);
             response.Show();
@@ -182,5 +201,6 @@ namespace GAMERS_TECH
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(member));
         }
+        
     }
 }
