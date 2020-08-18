@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GAMERS TECH", "GAMERS TECH.csproj", "{18C6F704-F0A0-40F0-BAF6-C733AC2AF169}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SingalRServer", "..\SingalRServer\SingalRServer.csproj", "{0D5475A8-3635-4EB6-A801-44E335768B50}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSMLib", "..\..\..\..\Downloads\GSM-master\GSMLib\GSMLib.csproj", "{EAE22C8C-6395-4A36-9CC1-A78E6E99ACDB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConnectionsServer", "..\ConnectionsServer\ConnectionsServer.csproj", "{2274D17E-23FE-4BD5-9A72-8C35926B6B93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwilioHelper", "..\TwilioHelper\TwilioHelper.csproj", "{6B2FEF37-47D1-47C7-897D-2F688D175C95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{18C6F704-F0A0-40F0-BAF6-C733AC2AF169}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18C6F704-F0A0-40F0-BAF6-C733AC2AF169}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18C6F704-F0A0-40F0-BAF6-C733AC2AF169}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D5475A8-3635-4EB6-A801-44E335768B50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D5475A8-3635-4EB6-A801-44E335768B50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D5475A8-3635-4EB6-A801-44E335768B50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D5475A8-3635-4EB6-A801-44E335768B50}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EAE22C8C-6395-4A36-9CC1-A78E6E99ACDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EAE22C8C-6395-4A36-9CC1-A78E6E99ACDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAE22C8C-6395-4A36-9CC1-A78E6E99ACDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{2274D17E-23FE-4BD5-9A72-8C35926B6B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2274D17E-23FE-4BD5-9A72-8C35926B6B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2274D17E-23FE-4BD5-9A72-8C35926B6B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B2FEF37-47D1-47C7-897D-2F688D175C95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B2FEF37-47D1-47C7-897D-2F688D175C95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B2FEF37-47D1-47C7-897D-2F688D175C95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B2FEF37-47D1-47C7-897D-2F688D175C95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

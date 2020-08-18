@@ -8,33 +8,37 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="CasesPage" Background="White">
-
-    <Grid>
-        <ListView x:Name="cases" ItemsSource="{Binding Items}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
-            <ListView.View>
-                <GridView x:Name="casesgrid">
-                    <GridViewColumn
+    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+        <materialDesign:DialogHost >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ListView Grid.Column="0" x:Name="cases" ItemsSource="{Binding Items}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
+                    <ListView.View>
+                        <GridView x:Name="casesgrid">
+                            <GridViewColumn
                             DisplayMemberBinding="{Binding Date}"
                             Header="Date" Width="100" />
-                    <GridViewColumn
+                            <GridViewColumn
                             DisplayMemberBinding="{Binding Time}"
                             Header="Time" Width="100" />
-                    <GridViewColumn
+                            <GridViewColumn
                                 DisplayMemberBinding="{Binding CaseId}"
                                 Header="Code" Width="100" />
-                    <GridViewColumn
+                            <GridViewColumn
                             DisplayMemberBinding="{Binding Village}"
                             Header="Village" Width="100" />
-                    <GridViewColumn
+                            <GridViewColumn
                                 DisplayMemberBinding="{Binding Description}"
                                 Header="Description" Width="150" />
-                    <GridViewColumn
+                            <GridViewColumn
                                 Header="Actions">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    
-                                        <Button
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+
+                                            <Button
                                             Style="{StaticResource MaterialDesignRaisedButton}"
                                             materialDesign:ButtonProgressAssist.Value="-1"
                                             materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
@@ -44,27 +48,56 @@
                                             Width="100"
                                             Command="{Binding Mycommand}"
                                             Margin="2,0" />
-                                      
-                                    <Button
+
+                                            <Button
                                         Style="{StaticResource MaterialDesignRaisedButton}"
                                         Width="100"
                                          Margin="2,0"
                                         ToolTip="Resource name: MaterialDesignRaisedButton">
-                                           Forward
-                                    </Button>
-                                    <Button
+                                                Forward
+                                            </Button>
+                                            <Button
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
                                         Width="105"
                                         Foreground="Red"
                                         ToolTip="MaterialDesignOutlinedButton">
-                                        False alarm
-                                    </Button>
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </Grid>
+                                                False alarm
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <materialDesign:Card Width="400" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="alertDialog" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="95"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FontWeight="Bold" Grid.Column="0" Grid.ColumnSpan="2" Padding="5" Text="Emergency alert" FontSize="20" Foreground="Black" Grid.Row="0"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Padding="10" TextWrapping="WrapWithOverflow" FontSize="18" Text="You have been assigned a case to handle. Do you accpet it?"/>
+                        <Button Grid.Column="0" Grid.Row="2" Background="CornflowerBlue" BorderBrush="Transparent" x:Name="AcceptBtn">Accept</Button>
+                        <Button Grid.Column="1" Grid.Row="2" Background="IndianRed" BorderBrush="Transparent" x:Name="Decline" Click="Decline_Click">Decline</Button>
+                    </Grid>
+                </materialDesign:Card>
+            </Grid>
+            <materialDesign:DialogHost.DialogContent>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="90"/>
+                        <RowDefinition Height="74"/>
+                    </Grid.RowDefinitions>
+                    
+                </Grid>
+            </materialDesign:DialogHost.DialogContent>
+        </materialDesign:DialogHost>
+    </ScrollViewer>
 </Page>

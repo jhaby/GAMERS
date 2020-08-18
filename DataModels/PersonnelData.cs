@@ -200,7 +200,8 @@ namespace GAMERS_TECH
             SMSDetails sms = new SMSDetails()
             {
                 Message = message,
-                Number = phone
+                Number = phone,
+                View = "Personnel"
             };
 
             await Personnelinfo.SendSms(sms);

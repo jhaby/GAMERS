@@ -14,7 +14,7 @@ namespace GAMERS_TECH
         public event Action<StatusModel> StatusReceived;
         public event Action<Sender> HandleEventReceived;
         public event Action<CasesModel> AlertReceived;
-        public event Action<string> SendingSuccess;
+        public event Action<string,string> SendingSuccess;
         public event Action<string> NewUser;
         public event Action<List<UsersRank>> Ranking;
         public event Action<string> DisconnectUser;
@@ -28,7 +28,7 @@ namespace GAMERS_TECH
             _connection.On<StatusModel>("ReceiveStatus", (status) => StatusReceived?.Invoke(status));
             _connection.On<Sender>("UpdateAlerts", (sender) => HandleEventReceived?.Invoke(sender));
             _connection.On<CasesModel>("AlertBroadcast", (sender) => AlertReceived?.Invoke(sender));
-            _connection.On<string>("SMSSendingSuccess", (Sid) => SendingSuccess?.Invoke(Sid));
+            _connection.On<string,string>("SMSSendingSuccess", (Sid,view) => SendingSuccess?.Invoke(Sid,view));
             _connection.On<string>("NewUserConnected", (connid) => NewUser?.Invoke(connid));
             _connection.On<List<UsersRank>>("UsersRank", (rank) => Ranking?.Invoke(rank));
             _connection.On<string>("DisconnectUser", (connId) => DisconnectUser?.Invoke(connId));
@@ -119,5 +119,6 @@ namespace GAMERS_TECH
     {
         public string Message { get; set; }
         public string Number { get; set; }
+        public string View { get; set; }
     }
 }

@@ -75,6 +75,8 @@ namespace GAMERS_TECH
 
         }
 
+
+
         private async void MainWindow_Closing(object sender, CancelEventArgs e)
         {
           Task.Run(() =>

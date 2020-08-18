@@ -123,6 +123,24 @@ namespace GAMERS_TECH
             return await DataAccess.LoadDataList<CasesModel, dynamic>(sql, new { Status="pending" }, connectionString);
 
         }
-        
+
+        public static async Task<ResponseViewModel> LoadVHT(string code)
+        {
+            string sql = "SELECT Fullname,Phone,Kin_phone,Village FROM vht_info WHERE VHTCode = @Code";
+            return await DataAccess.LoadData<ResponseViewModel, dynamic>(sql, new { Code = code }, connectionString);
+        }
+        public static async Task<List<EMTInfo>> LoadEMT(string location)
+        {
+                string sql = "SELECT TeamId,Phone,Type FROM emergency_teams WHERE Region=@Code";
+                return await DataAccess.LoadDataList<EMTInfo, dynamic>(sql, new { Code = location }, connectionString);
+            
+        }
+        public static async Task<List<MedicalInfo>> LoadMedical(string location)
+        {
+            string sql = "SELECT ID,Phone,Fullname,Status,Category FROM mediacl_officers WHERE Region=@Code";
+            return await DataAccess.LoadDataList<MedicalInfo, dynamic>(sql, new { Code = location }, connectionString);
+
+        }
+
     }
 }

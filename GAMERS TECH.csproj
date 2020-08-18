@@ -30,6 +30,7 @@
     <PackageReference Include="Microsoft.Maps.MapControl.WPF" Version="1.0.0.3" />
     <PackageReference Include="MySql.Data" Version="8.0.21" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+    <PackageReference Include="Twilio" Version="5.45.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -27,7 +27,7 @@ namespace GAMERS_TECH
             InitializeComponent();
             sService = signalService;
 
-            Items = new CasesViewModel(userinfo);
+            Items = new CasesViewModel(userinfo,sService);
             User = userinfo;
 
             this.DataContext = Items;
@@ -44,7 +44,7 @@ namespace GAMERS_TECH
         {
             Items.Reload(User);
             CollectionViewSource.GetDefaultView(cases.ItemsSource).Refresh();
-            
+                        
             if (User.Rank == "1")
             {
                 int index = Items.Items.FindIndex(agent => agent.CaseId.Equals(obj.CaseId, StringComparison.Ordinal));
@@ -54,14 +54,21 @@ namespace GAMERS_TECH
                     CaseId = obj.CaseId,
                     Response = "accept"
                 };
-                Task.Run(async () =>
-                {
-                    await SendHandledAlert(sender);
-                });
-                
                 string[] details = { obj.CaseId, User.UserId, Items.Items[index].Location, Items.Items[index].Village, Items.Items[index].VHTCode, Items.Items[index].DateTime.ToString(), Items.Items[index].Description };
-                ResponseWindow response = new ResponseWindow(details);
-                response.Show();
+                Dispatcher.Invoke(()=> alertDialog.Visibility = Visibility.Visible);
+                AcceptBtn.Click += delegate
+                 {
+                     Dispatcher.Invoke(async() =>
+                     {
+                         alertDialog.Visibility = Visibility.Collapsed;
+                         ResponseWindow response = new ResponseWindow(details, sService);
+                         response.Show();
+
+                         await SendHandledAlert(sender);
+                     });
+                 };
+               
+                
             }
 
         }
@@ -75,7 +82,11 @@ namespace GAMERS_TECH
         {
             await sService.HandleAlert(sender);
         }
-       
+
+        private void Decline_Click(object sender, RoutedEventArgs e)
+        {
+            alertDialog.Visibility = Visibility.Collapsed;
+        }
     }
 
 
@@ -84,6 +95,7 @@ namespace GAMERS_TECH
     public class CasesViewModel : INotifyPropertyChanged
     {
         private List<CasesModel> items;
+        private ConnService sService;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string member)
@@ -100,18 +112,20 @@ namespace GAMERS_TECH
             }
         }
 
-        public CasesViewModel(UserData user)
+        public CasesViewModel(UserData user, ConnService signal)
         {
-            Items = ItemList(user);
+            sService = signal;
+            Items = ItemList(user,signal);
         }
 
-        public List<CasesModel> ItemList(UserData user)
+        public List<CasesModel> ItemList(UserData user, ConnService signal)
         {
             Items = Helpers.LoadCases().Result;
 
             foreach (var s in Items)
             {
                 s.AgentId = user.UserId;
+                s.signalService = signal;
 
             }
 
@@ -120,7 +134,7 @@ namespace GAMERS_TECH
         }
         public void Reload(UserData user)
         {
-            Items = ItemList(user);
+            Items = ItemList(user,sService);
         }
 
     }
@@ -192,7 +206,7 @@ namespace GAMERS_TECH
 
             await CasesPage.SendHandledAlert(sender);
             string[] details = { caseId, AgentId, Location, village, vHTCode, dateTime.ToString(), description };
-            ResponseWindow response = new ResponseWindow(details);
+            ResponseWindow response = new ResponseWindow(details,signalService);
             response.Show();
         }
 

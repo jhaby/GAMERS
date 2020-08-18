@@ -75,6 +75,10 @@
                 <Separator/>
 
                 <TextBlock Text="Community health worker info" HorizontalAlignment="Stretch" FontSize="16" Padding="10" Background="CadetBlue" Margin="0,10,0,0"/>
+                <TextBlock Text="Officer ID:" FontSize="15" Margin="5" x:Name="medicalId"/>
+                <TextBlock Text="Current location:" FontSize="15" Margin="5" x:Name="medicalLocation"/>
+                <TextBlock Text="Contact:" FontSize="15" Margin="5" x:Name="medicalContact"/>
+                <TextBlock Text="Status:" FontSize="15" Margin="5" x:Name="medicalStat"/>
             </StackPanel>
         </materialDesign:Card>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Background="#FFD5D5D6" >
@@ -92,26 +96,24 @@
             <materialDesign:Card Background="White" Foreground="Black" Width="auto" Height="180" Margin="10" Opacity="0.7">
                 <StackPanel>
                     <TextBlock Text="VHT info" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="18" HorizontalAlignment="Stretch" Background="MidnightBlue" Height="30"/>
-                    <materialDesign:Chip HorizontalAlignment="Center" Margin="5" x:Name="VHTinfo" Content="VHT name">
+                    <materialDesign:Chip HorizontalAlignment="Center" Margin="5" x:Name="VHTinfo" Content="{Binding Fullname}">
                         <materialDesign:Chip.Icon>                             
                             <Image 
                                  Source="pack://application:,,,/Resources/avatar2.png" />
                         </materialDesign:Chip.Icon>
                     </materialDesign:Chip>
-                    <TextBlock HorizontalAlignment="Center" x:Name="VHTphone" Margin="5" FontSize="15px" Text="Phone: 07801234235"/>
-                    <TextBlock HorizontalAlignment="Center" x:Name="VHTvillage" Margin="5" FontSize="15px" Text="Village: Jalawo"/>
-                    <TextBlock HorizontalAlignment="Center" x:Name="Kinsphone" Margin="5" FontSize="15px" Text="Kin's Phone: 07801234235" TextWrapping="WrapWithOverflow"/>
+                    <TextBlock HorizontalAlignment="Center" TextAlignment="Left" x:Name="VHTphone" Margin="5" TextWrapping="Wrap" FontSize="15px" Text="{Binding Phone}"/>
+                    <TextBlock HorizontalAlignment="Center" TextAlignment="Left" x:Name="VHTvillage" Margin="5" TextWrapping="Wrap" FontSize="15px" Text="{Binding VHTVillage}"/>
+                    <TextBlock HorizontalAlignment="Center" TextAlignment="Left" x:Name="Kinsphone" Margin="5"  FontSize="15px" Text="{Binding Kin_phone}" TextWrapping="WrapWithOverflow"/>
                 </StackPanel>
             </materialDesign:Card>
             
-            <materialDesign:Card Background="White" Foreground="Black" Width="auto" Height="180" Margin="10,20,10,10" Opacity="0.7" >
+            <materialDesign:Card Background="White" Foreground="Black" Width="auto" Height="340" Margin="10,20,10,10" Opacity="0.7" >
                 
                     <StackPanel Margin="5">
                     <TextBlock Text="Progress info" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="18" HorizontalAlignment="Stretch" Background="MidnightBlue" Height="30"/>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel x:Name="progresslog">
-                            <TextBlock FontStyle="Italic" Text="Starting response protocol..."></TextBlock>
-                        </StackPanel>
+                        <StackPanel x:Name="progresslog"/>
                     </ScrollViewer>
                     </StackPanel>
                

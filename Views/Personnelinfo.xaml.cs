@@ -52,9 +52,13 @@ namespace GAMERS_TECH
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Users.ItemsSource);
             view.Filter = UseFilter;
 
-            signalService.SendingSuccess += (string response) =>
+            signalService.SendingSuccess += (string response,string view) =>
               {
-                  MessageBox.Show(response);
+                  if(view == "Personnel")
+                  {
+                      MessageBox.Show(response);
+                  }
+                  
 
               };
 
