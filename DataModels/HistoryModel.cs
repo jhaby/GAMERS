@@ -6,39 +6,28 @@ using System.Windows.Media;
 
 namespace GAMERS_TECH
 {
-    public class HistoryModel : INotifyPropertyChanged
+    public class HistoryModel 
     {
-        private string dateTime;
-        private string caseId;
-        private string description;
-        private string location;
-        private string village;
-        private string category;
-        private string vHTCode;
-        private string agentId;
-        private string eMTCode;
-        private string duration;
-        private string visitationRef;
-        private string status;
-
-        public string DateTime { get => dateTime; set { dateTime = value; OnpropertyChange("DateTime"); } }
-        public string CaseId { get => caseId; set { caseId = value; OnpropertyChange("CaseId"); } }
-        public string Description { get => description; set { description = value; OnpropertyChange("Description"); } }
-        public string Location { get => location; set { location = value; OnpropertyChange("Location"); } }
-        public string Village { get => village; set { village = value; OnpropertyChange("Village"); } }
-        public string Category { get => category; set { category = value; OnpropertyChange("Category"); } }
-        public string VHTCode { get => vHTCode; set { vHTCode = value; OnpropertyChange("VHTCode"); } }
-        public string AgentId { get => agentId; set { agentId = value; OnpropertyChange("AgentId"); } }
-        public string EMTCode { get => eMTCode; set { eMTCode = value; OnpropertyChange("EMTCode"); } }
-        public string Duration { get => duration; set { duration = value; OnpropertyChange("Duration"); } }
-        public string VisitationRef { get => visitationRef; set { visitationRef = value; OnpropertyChange("VisitationRef"); } }
-        public string Status { get => status; set { status = value; OnpropertyChange("Status"); } }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnpropertyChange(string member)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(member));
-        }
+        public string DateTime { get; set; }
+        public string CaseId { get; set; }
+        public string Description { get; set; }
+        public string Location { get; set; }
+        public string Village { get; set; }
+        public string Category { get; set; }
+        public string VHTCode { get; set; }
+        public string AgentId { get; set; }
+        public string EMTCode { get; set; }
+        public string Duration { get; set; }
+        public string VisitationRef { get; set; }
+        public string Status { get; set; }
+        public string VHTName { get; set; }
+        public string VHTPhone { get; set; }
+        public string EMTName { get; set; }
+        public string EMTPhone { get; set; }
+        public string CHWCode { get; set; }
+        public string CHWName { get; set; }
+        public string CHWPhone { get; set; }
+        public string Notes { get; set; }
     }
 
     public class AgentsModel : INotifyPropertyChanged

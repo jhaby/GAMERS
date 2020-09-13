@@ -6,60 +6,39 @@
       xmlns:local="clr-namespace:GAMERS_TECH"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="450" d:DesignWidth="560"
       Title="LibraryPage" Background="White">
-
-    <Grid Margin="0,30,0,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="200"/>
-            <RowDefinition Height="230"/>            
-        </Grid.RowDefinitions>
-        <materialDesign:Card
-              Background="#FFD8D8D8"
-              Foreground="{DynamicResource MaterialDesignBody}"
-              Width="200"
-            Margin="30"
-            Grid.Row="0"
-            Grid.Column="0"
-              Padding="8"
-              UniformCornerRadius="6">
-            <StackPanel>
-                <materialDesign:PackIcon Kind="ChartAreaspline" Width="200" Height="70" HorizontalAlignment="Center" />
-                <TextBlock FontSize="15px" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center">Emergency response statistics</TextBlock>
+    <ScrollViewer>
+        <Grid Margin="0,30,0,0">
+            <Grid.ColumnDefinitions>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="130"/>
+                <RowDefinition Height="230"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Button Margin="80,0,80,0" Background="CadetBlue" BorderBrush="Transparent">
+                    Emergency response statistics
+                </Button>
+                <Button Margin="80,10,80,0" Background="CadetBlue" BorderBrush="Transparent">
+                    Cases/Disease statistics
+                </Button>
+                <Button Margin="80,10,80,0" Click="Button_Click" Background="CadetBlue" BorderBrush="Transparent">
+                    Custom query
+                </Button>
             </StackPanel>
-        </materialDesign:Card>
-        <materialDesign:Card
-              Background="#FFD8D8D8"
-              Foreground="{DynamicResource MaterialDesignBody}"
-              Width="200"
-            Margin="30"
-            Grid.Row="0"
-            Grid.Column="1"
-              Padding="8"
-              UniformCornerRadius="6">
-            <StackPanel>
-                <materialDesign:PackIcon Kind="ChartScatterPlot" Width="200" Height="70" HorizontalAlignment="Center" />
-                <TextBlock FontSize="15px" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center">Disease statistics</TextBlock>
-            </StackPanel>
-        </materialDesign:Card>
-        <materialDesign:Card
-              Background="#FFD8D8D8"
-              Foreground="{DynamicResource MaterialDesignBody}"
-              Width="200"
-            Margin="30"
-            Grid.Row="0"
-            Grid.Column="2"
-              Padding="8"
-              UniformCornerRadius="6">
-            <StackPanel>
-                <materialDesign:PackIcon Kind="ChartBellCurve" Width="200" Height="70" HorizontalAlignment="Center" />
-                <TextBlock FontSize="15px" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center">Progress statistics</TextBlock>
-            </StackPanel>
-        </materialDesign:Card>
-    </Grid>
+            <WrapPanel Grid.Row="1" Visibility="Collapsed" Margin="20" x:Name="filter"  FlowDirection="LeftToRight">
+                <TextBlock Text="Filter by: " Margin="0,0,20,0"/>
+                <ComboBox Width="150">
+                    <ComboBoxItem Content="Age"/>
+                    <ComboBoxItem Content="Location"/>
+                    <ComboBoxItem Content="Gender"/>
+                    <ComboBoxItem Content="Disease"/>
+                    <ComboBoxItem Content="Healthcenter"/>
+                    <ComboBoxItem Content="Village"/>
+                    <ComboBoxItem Content="Date/time"/>
+                </ComboBox>
+            </WrapPanel>
+        </Grid>
+    </ScrollViewer>
 </Page>

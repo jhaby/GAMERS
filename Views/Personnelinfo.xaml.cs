@@ -24,6 +24,7 @@ namespace GAMERS_TECH
     public partial class Personnelinfo : Page
     {
         private List<PersonnelData> UserList;
+        private UserData user;
         PersonnelInfoViewModel persons;
         CreateUserData createUser;
         private static ConnService signalService;
@@ -31,7 +32,7 @@ namespace GAMERS_TECH
         private static string msg;
         private Button sendBtn;
 
-        public Personnelinfo(PersonnelInfoViewModel personnel, ConnService Sservice)
+        public Personnelinfo(UserData user ,PersonnelInfoViewModel personnel, ConnService Sservice)
 
         {
             InitializeComponent();
@@ -39,6 +40,7 @@ namespace GAMERS_TECH
             signalService = Sservice;
 
             UserList = new List<PersonnelData>();
+            this.user = user;
             persons = personnel ;
             UserList = persons.GetData();
             Users.ItemsSource = UserList;
@@ -52,9 +54,9 @@ namespace GAMERS_TECH
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Users.ItemsSource);
             view.Filter = UseFilter;
 
-            signalService.SendingSuccess += (string response,string view) =>
+            signalService.SendingSuccess += (string response,string view,string sender) =>
               {
-                  if(view == "Personnel")
+                  if(sender == user.UserId && view == "Personnel")
                   {
                       MessageBox.Show(response);
                   }

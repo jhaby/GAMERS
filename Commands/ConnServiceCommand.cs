@@ -9,12 +9,10 @@ namespace GAMERS_TECH
     {
 
         Action<object> executeMethod;
-        Func<object, bool> canExecuteMethod;
 
-        public RespondCommand(Action<object> executeMethod, Func<object, bool> canExecuteMethod)
+        public RespondCommand(Action<object> executeMethod)
         {
             this.executeMethod = executeMethod;
-            this.canExecuteMethod = canExecuteMethod;
         }
         public bool CanExecute(object parameter)
         {

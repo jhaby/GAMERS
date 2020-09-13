@@ -31,8 +31,9 @@ namespace GAMERS_TECH
 
     public class EMTInfo 
     {
-        public string TeamId { get; set; }
+        public string TeamID { get; set; }
         public string Phone { get; set; }
+        public string Transporter { get; set; }
         public string Location { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
@@ -45,7 +46,6 @@ namespace GAMERS_TECH
         public string ID { get; set; }
         public string Fullname { get; set; }
         public string Phone { get; set; }
-        public string Region { get; set; }
         public string Category { get; set; }
         public string Status { get; set; }
 

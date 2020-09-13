@@ -6,12 +6,12 @@
       xmlns:local="clr-namespace:GAMERS_TECH"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="450" d:DesignWidth="400"
       Title="Personnelinfo" Background="White">
     <Page.Resources>
         <DataTemplate x:Key="PersonnelInfo">
             <materialDesign:Card
-                      Background="#FFDEDEDE"
+                      Background="White"
                       Foreground="Black"
                     Margin="10"
                     HorizontalAlignment="Stretch"
@@ -20,30 +20,39 @@
                       UniformCornerRadius="6">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="75"/>
-                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="90"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding PhotoPath}" />
-                    <StackPanel Grid.Column="1" Grid.Row="0" Margin="20,0,0,0">
-                        <TextBlock FontSize="15px" FontWeight="Bold" Text="{Binding Name}" />
+                    <Rectangle Grid.Column="0" Grid.Row="0" Width="60" Height="60" RadiusX="50" RadiusY="50">
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="{Binding PhotoPath}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Vertical" Grid.Row="0" Margin="8,0,0,0">
+                        <TextBlock  FontSize="15px" FontWeight="Bold" Text="{Binding Name}" />
+                    <StackPanel  Orientation="Horizontal">
                         <TextBlock FontSize="10px" Text="{Binding Role}" />
-                        <TextBlock FontSize="10px" Text="{Binding Email}" />
-                        <TextBlock FontSize="10px" Text="{Binding Phone}" />
+                            <TextBlock FontSize="10px" Text="  |  "/>
+                            <TextBlock FontSize="10px" Text="{Binding Email}" />
+                    </StackPanel>
+                        <StackPanel  Orientation="Horizontal">
+                            <TextBlock FontSize="10px" Text="{Binding Phone}"  />
+                            <TextBlock FontSize="10px" Text="  |  "/>
+                            <TextBlock FontSize="10px" Text="{Binding Status}" FontWeight="Bold" Foreground="CadetBlue" />
+                        </StackPanel>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Grid.Row="0">
                         <Button
                               Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                               ToolTip="Send a message">
-                            
+
                             <materialDesign:PopupBox
                                 PlacementMode="LeftAndAlignMiddles"
                                 UnfurlOrientation="Horizontal"
-                                ToolTip="Manage items"
                                 StaysOpen="True"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom">
@@ -70,7 +79,7 @@
                                             Text="{Binding Messages, Mode=TwoWay}"
                                             VerticalScrollBarVisibility="Auto"
                                             materialDesign:HintAssist.Hint="Message" >
-                                            
+
                                         </TextBox>
                                         <Button
                                             Grid.Row="1"
@@ -84,7 +93,6 @@
                             </materialDesign:PopupBox>
                         </Button>
                     </StackPanel>
-                    <materialDesign:Chip Grid.Row="1" Grid.Column="1" Background="LightGreen" Margin="25,0,0,0" Content="{Binding Status}" />
                 </Grid>
             </materialDesign:Card>
         </DataTemplate>

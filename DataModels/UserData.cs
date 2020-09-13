@@ -20,6 +20,7 @@ namespace GAMERS_TECH
         public int MissedAlerts { get; set; }
         public string Firstname { get; set; }
         public string Surname { get; set; }
+        public string AuthToken { get; set; }
         public string Language { get => "Language: " + language; set => language = value; }
 
         public string Rank { get => rank;

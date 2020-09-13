@@ -184,15 +184,11 @@ namespace GAMERS_TECH
             get
             {
                 if (sendMessageCommand == null)
-                    sendMessageCommand = new RespondCommand(ExceuteMethod, CanExecute);
+                    sendMessageCommand = new RespondCommand(ExceuteMethod);
                 return sendMessageCommand;
             }
         }
 
-        private bool CanExecute(object arg)
-        {
-            return true;
-        }
 
         private async void ExceuteMethod(object obj)
         {

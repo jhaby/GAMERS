@@ -9,7 +9,7 @@ using Dapper;
 
 namespace GAMERS_TECH
 {
-   class DataAccess
+   public class DataAccess
     {
         public static async Task<List<T>> LoadDataList<T,U>(string sql, U parameter, string connectionString)
         {

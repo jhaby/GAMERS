@@ -11,5 +11,6 @@ namespace GAMERS_TECH
 {
     public partial class App : Application
     {
+
     }
 }

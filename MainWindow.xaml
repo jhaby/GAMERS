@@ -11,55 +11,67 @@
      TextOptions.TextFormattingMode="Ideal"
      TextOptions.TextRenderingMode="Auto"
      FontFamily="{DynamicResource MaterialDesignFont}"
-        mc:Ignorable="d" Height="600" Width="350" ResizeMode="NoResize" Background="{x:Null}" WindowStyle="None" Topmost="True" WindowStartupLocation="CenterScreen" Foreground="Black" AllowsTransparency="True">
+        mc:Ignorable="d" Height="400" Width="650" ResizeMode="NoResize" Background="{x:Null}" WindowStyle="None" Topmost="True" WindowStartupLocation="CenterScreen" Foreground="Black" AllowsTransparency="True">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
 
-        <StackPanel Margin="25,25,25,85" Grid.Row="1">
-            <Border Margin="10,0,10,0" Background="#FF270461"  Height="177" Width="275">
-                <StackPanel >
-                    <Grid Grid.RowSpan="1" Background="#FF12012E">
-                        <materialDesign:PackIcon Kind="Close" Margin="0,5,10,0" Foreground="#FFFFFDFD" x:Name="close" HorizontalAlignment="Right" MouseLeftButtonDown="CloseWindow"  />
-                        <materialDesign:PackIcon Kind="WindowMinimize" Foreground="White" Margin="0,5,40,0" HorizontalAlignment="Right" MouseLeftButtonDown="Minimise" />
-                    </Grid>
-                    <Image Source="pack://siteoforigin:,,,/Resources/dorc.png" Width="184" Height="146"/>
+        <StackPanel Grid.Column="0" Height="400" MouseLeftButtonDown="StackPanel_MouseLeftButtonDown"  Background="#FF270461">
+
+            <Image Source="Resources/splash.jpg" x:Name="cover" Height="400" Width="660"/>
+
+        </StackPanel>
+        <StackPanel Grid.Column="1" MouseLeftButtonDown="StackPanel_MouseLeftButtonDown" Background="#FFEAEAEA" Height="400">
+            
+                <StackPanel Margin="10 5 10 10">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="Office" x:Name="modeValue" VerticalAlignment="Center"/>
+                    <materialDesign:PopupBox DockPanel.Dock="Right" HorizontalAlignment="Right" PlacementMode="BottomAndAlignRightEdges">
+                        <ListView x:Name="mode" SelectionChanged="mode_SelectionChanged"/>
+                    </materialDesign:PopupBox>
                 </StackPanel>
-            </Border>
-            <Border Background="White" CornerRadius="5" Height="253" materialDesign:ShadowAssist.ShadowDepth="Depth4" BorderBrush="#FF959595" BorderThickness="2,2,2,2">
-                <StackPanel Margin="20 5 20 20">
-                    <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" Visibility="Collapsed" x:Name="progress"/>
-                    <TextBlock Text="Login" TextAlignment="Center" FontSize="20" FontWeight="Bold" />
-                    <ComboBox x:Name="Username" Margin="25,25,25,5" Style="{DynamicResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="Select user">
-                        <ComboBoxItem Content="Aloysius"/>
-                        <ComboBoxItem Content="Jeremiah"/>
-                        <ComboBoxItem Content="Attending Two"/>
-                        <ComboBoxItem Content="Attending Three"/>
-                    </ComboBox>
+                    
+                <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" Visibility="Collapsed" x:Name="progress"/>
+                <Image Source="pack://siteoforigin:,,,/Resources/dorc.png" Width="184" Height="116"/>
+                <TextBlock Text="Login" TextAlignment="Center" FontSize="20" FontWeight="Bold" />
+                <ComboBox x:Name="region" Margin="25,0,25,5" Style="{DynamicResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="Select region">
+                    <ComboBoxItem Content="Moroto pilot"/>
+                </ComboBox>
+                <TextBox x:Name="Username" Margin="25,0,25,5" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Username">
+                       
+                </TextBox>
                     <PasswordBox  x:Name="Password"
-  materialDesign:HintAssist.Hint="Password"
-  materialDesign:HintAssist.Foreground="Green"
-                                  materialDesign:HintAssist.HelperText="Use 'prototype' as password"
-                        Margin="25,0,25,25"
-  materialDesign:TextFieldAssist.UnderlineBrush="Green"
-  Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" />
+                          materialDesign:HintAssist.Hint="Password"
+                          materialDesign:HintAssist.Foreground="Green"
+                          Margin="25,0,25,15"
+                          materialDesign:TextFieldAssist.UnderlineBrush="Green"
+                          Style="{DynamicResource MaterialDesignFloatingHintPasswordBox}" />
 
-                    <Grid Margin="15"
-  Width="124">
-                        <Button x:Name="BtnSubmit"
-    Style="{DynamicResource MaterialDesignRaisedDarkButton}"
-    Height="50"
-    materialDesign:ButtonAssist.CornerRadius="25" Background="#FF0B12B0" Click="Login">
-                            <TextBlock
-      Text="Submit" />
+                     <StackPanel Orientation="Horizontal" Width="250">
+                            <Button x:Name="BtnSubmit"
+                            Height="40"
+                            Width="100"
+                            Margin="20,0,0,0"
+                            BorderBrush="Transparent"
+                            materialDesign:ButtonAssist.CornerRadius="25" Background="#FF003FAC" Click="Login">
+                            <TextBlock Text="Submit" />
                         </Button>
-                    </Grid>
+                    <Button
+                            Height="40"
+                        Click="CloseWindow"
+                            Width="100"
+                        Margin="20,0,0,0"
+                            BorderBrush="Transparent"
+                            materialDesign:ButtonAssist.CornerRadius="25" Background="#FFBB2E47"  VerticalContentAlignment="Stretch" VerticalAlignment="Stretch">
+                        <TextBlock Text="Cancel" VerticalAlignment="Center" />
+                    </Button>
+                </StackPanel>
 
                 </StackPanel>
-            </Border>
+            
         </StackPanel>
     </Grid>
 </Window>

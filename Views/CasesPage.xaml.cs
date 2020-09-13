@@ -21,6 +21,8 @@ namespace GAMERS_TECH
         private static ConnService sService;
         private CasesViewModel Items;
         private UserData User;
+        public static event Action<UserData,CasesModel, List<CasesModel>> AlertEvent;
+        public static event Action<string[]> Respond;
 
         public CasesPage (UserData userinfo, ConnService signalService)
         {
@@ -35,52 +37,40 @@ namespace GAMERS_TECH
             sService.AlertReceived += SService_AlertReceived;
 
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(cases.ItemsSource);
-            
 
+            
             sService.HandleEventReceived += SService_HandleEventReceived;
         }
+
+        
         /*refresh cases ledger on alert broadcast receive*/
         private void SService_AlertReceived(CasesModel obj)
         {
             Items.Reload(User);
             CollectionViewSource.GetDefaultView(cases.ItemsSource).Refresh();
-                        
-            if (User.Rank == "1")
-            {
-                int index = Items.Items.FindIndex(agent => agent.CaseId.Equals(obj.CaseId, StringComparison.Ordinal));
-                Sender sender = new Sender()
-                {
-                    UserId = User.UserId,
-                    CaseId = obj.CaseId,
-                    Response = "accept"
-                };
-                string[] details = { obj.CaseId, User.UserId, Items.Items[index].Location, Items.Items[index].Village, Items.Items[index].VHTCode, Items.Items[index].DateTime.ToString(), Items.Items[index].Description };
-                Dispatcher.Invoke(()=> alertDialog.Visibility = Visibility.Visible);
-                AcceptBtn.Click += delegate
-                 {
-                     Dispatcher.Invoke(async() =>
-                     {
-                         alertDialog.Visibility = Visibility.Collapsed;
-                         ResponseWindow response = new ResponseWindow(details, sService);
-                         response.Show();
-
-                         await SendHandledAlert(sender);
-                     });
-                 };
-               
-                
-            }
-
+            AlertEvent?.Invoke(User,obj,Items.Items);
         }
+        
 
         private void SService_HandleEventReceived(Sender obj)
         {
             Items.Reload(User);
             CollectionViewSource.GetDefaultView(cases.ItemsSource).Refresh();
         }
-        public static async Task SendHandledAlert(Sender sender)
+        public static async Task SendHandledAlert(Sender sender,string[] details)
         {
-            await sService.HandleAlert(sender);
+            CasesModel cases = new CasesModel()
+            {
+                AgentId = details[1],
+                CaseId = details[0],
+                Location = details[2],
+                Village = details[3],
+                VHTCode = details[4],
+                Description = details[6]
+            };
+            await sService.HandleAlert(sender,cases);
+
+            Respond?.Invoke(details);
         }
 
         private void Decline_Click(object sender, RoutedEventArgs e)
@@ -126,12 +116,14 @@ namespace GAMERS_TECH
             {
                 s.AgentId = user.UserId;
                 s.signalService = signal;
-
+                
             }
 
             return Items;
 
         }
+
+
         public void Reload(UserData user)
         {
             Items = ItemList(user,sService);
@@ -152,7 +144,9 @@ namespace GAMERS_TECH
         private string vHTCode;
         private string status;
         private string category;
-        private ICommand mycommand;
+        private ICommand sendcommand;
+        private ICommand falseAlarm;
+
         public ConnService signalService { get; set; }
 
         public string AgentId { get; set; }
@@ -172,27 +166,44 @@ namespace GAMERS_TECH
             }
         }
         public DateTime DateTime { get { return dateTime; } set { dateTime = value; OnPropertyChanged("DateTime"); } }
-        public string CaseId { get => caseId; set { caseId = value; OnPropertyChanged("CaseId"); } }
+        public string CaseId { get => "CaseId: " + caseId; set { caseId = value; OnPropertyChanged("CaseId"); } }
         public string Location { get => location; set { location = value; OnPropertyChanged("Location"); } }
-        public string Village { get => village; set { village = value; OnPropertyChanged("Village"); } }
-        public string Description { get => description; set { description = value; OnPropertyChanged("Description"); } }
+        public string Village { get => "Village: " + village; set { village = value; OnPropertyChanged("Village"); } }
+        public string Description { get => "Description: " + description; set { description = value; OnPropertyChanged("Description"); } }
         public string VHTCode { get => vHTCode; set { vHTCode = value; OnPropertyChanged("VHTCode"); } }
         public string Status { get => status; set { status = value; OnPropertyChanged("Status"); } }
         public string Category { get => category; set { category = value; OnPropertyChanged("Category"); } }
 
-        public ICommand Mycommand
+        public ICommand Sendcommand
         {
             get
             {
-                if (mycommand == null)
-                    mycommand = new RespondCommand(ExecuteCommand,CanExecuteCommand);
-                return mycommand;
+                if (sendcommand == null)
+                    sendcommand = new RespondCommand(ExecuteCommand);
+                return sendcommand;
             }
         }
 
-        private bool CanExecuteCommand(object arg)
+        public ICommand FalseAlarm {
+            get
+            {
+                if (falseAlarm == null)
+                    falseAlarm = new RespondCommand(ExecuteFalseAlarm);
+                return falseAlarm;
+            }
+        }
+
+        private async void ExecuteFalseAlarm(object obj)
         {
-            return true;
+            Sender sender = new Sender()
+            {
+                UserId = AgentId,
+                CaseId = caseId,
+                Response = "false"
+            };
+
+            string[] details = { caseId, AgentId, Location, village, vHTCode, dateTime.ToString(), description };
+            await CasesPage.SendHandledAlert(sender, details);
         }
 
         private async void ExecuteCommand(object obj)
@@ -204,17 +215,22 @@ namespace GAMERS_TECH
                 Response = "accept"
             };
 
-            await CasesPage.SendHandledAlert(sender);
             string[] details = { caseId, AgentId, Location, village, vHTCode, dateTime.ToString(), description };
-            ResponseWindow response = new ResponseWindow(details,signalService);
-            response.Show();
+            await CasesPage.SendHandledAlert(sender, details);
+
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         public void OnPropertyChanged(string member)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(member));
         }
-        
+
+    }
+    public class AlertEventArgs: EventArgs
+    {
+        public List<CasesModel> CaseList { get; set; }
     }
 }

@@ -79,7 +79,6 @@ namespace GAMERS_TECH
                         AgentsList[index].Background = Colors.LightPink;
                 }
             };
-            LoadHistory();
             agentslist.ItemsSource = AgentsList;
 
             signalService.Ranking += (List<UsersRank> obj) =>
@@ -150,17 +149,6 @@ namespace GAMERS_TECH
 
         
 
-       
-
-        private void LoadHistory()
-        {
-            List<HistoryModel> _history = new List<HistoryModel>();
-
-            _history = Helpers.LoadHistoryAsync("dashboard").Result;
-
-            history.ItemsSource = _history;
-            
-        }
     }
 
     

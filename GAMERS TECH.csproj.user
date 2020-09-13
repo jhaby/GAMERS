@@ -12,7 +12,7 @@
     <Compile Update="Home.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="ResponseWindow.xaml.cs">
+    <Compile Update="Views\CaseDetails.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\CasesPage.xaml.cs">
@@ -33,6 +33,12 @@
     <Compile Update="Views\Personnelinfo.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\ResponsePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SchedulePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Home.xaml">
@@ -41,7 +47,7 @@
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ResponseWindow.xaml">
+    <Page Update="Views\CaseDetails.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\CasesPage.xaml">
@@ -60,6 +66,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Personnelinfo.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ResponsePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SchedulePage.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
