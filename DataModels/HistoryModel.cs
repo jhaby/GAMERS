@@ -75,7 +75,7 @@ namespace GAMERS_TECH
         {
             get
             {
-                return "Status: " + status;
+                return status;
             }
             set
             {

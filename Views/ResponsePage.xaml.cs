@@ -1,19 +1,17 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Telerik.Windows.Controls;
 
 namespace GAMERS_TECH.Views
 {
@@ -28,9 +26,7 @@ namespace GAMERS_TECH.Views
         private MedicalInfo MedList;
         private ResponseViewModel viewdata;
         public event Action<string> BtnClicked;
-        private int Emttrial = 0;
-        private int Chwtrial = 0;
-        private HttpClient _client;
+        public static Action<string> PlaceCall;
         List<string> detailsList;
 
         public ResponsePage(UserData user ,ConnService sService, string[] details)
@@ -45,7 +41,6 @@ namespace GAMERS_TECH.Views
             EMTList = new EMTInfo();
             MedList = new MedicalInfo();
             caseno.Text += info[0];
-            _client = new HttpClient();
 
             StartProtocol();
 
@@ -54,11 +49,22 @@ namespace GAMERS_TECH.Views
                 detailsList.Add(i);
             }
 
+            Home.CloseHomeWindow += delegate
+             {
+                 TrackingMap.Close();
+                 TrackingMap.Dispose();
+             };
+
             sService.SendingSuccess += SService_SendingSuccess;
 
             sService.ProgressReportA += SService_ProgressReportA;
             sService.ProgressReportB += SService_ProgressReportB;
             sService.ProgressReportC += SService_ProgressReportC;
+            sService.CallSuccess += SService_CallSuccess;
+            sService.Restarted += (string obj) =>
+             {
+                 Dispatcher.Invoke(()=> RadWindow.Alert("Response protocol has been restarted"));
+             };
 
             sService.ResponseSuccess += (string sender, string response) =>
             {
@@ -83,11 +89,29 @@ namespace GAMERS_TECH.Views
 
         }
 
-        private void SService_ProgressReportC(MedicalInfo obj)
+        private void SService_CallSuccess(string arg1, string arg2, string arg3)
         {
-            if (obj != null)
+            if (arg2 == EMTList.TeamID && arg3 == "Case")
             {
-                Dispatcher.Invoke(async()=>
+                Dispatcher.Invoke(() =>
+                {
+                    ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Transporter has been called", Brushes.Blue);
+                });
+            }
+            else if(arg2 == MedList.ID && arg3 == "CHW")
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Community health worker has been called", Brushes.Blue);
+                });
+            }
+        }
+
+        private void SService_ProgressReportC(MedicalInfo obj,string caseid)
+        {
+            if (obj != null && caseid == info[0])
+            {
+                Dispatcher.Invoke(()=>
                 {
                     MedList = obj;
 
@@ -95,12 +119,11 @@ namespace GAMERS_TECH.Views
                     medicalStat.Text += MedList.Status;
                     medicalContact.Text += MedList.Phone;
 
-                    ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Successfully assigned case", Brushes.Green);
+                    ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Successfully assigned community health worker", Brushes.Green);
 
-                    await ContactCHW();
                 });
             }
-            else if (obj == null)
+            else if (obj == null && caseid == info[0])
             {
                 Dispatcher.Invoke(delegate
                 {
@@ -109,11 +132,11 @@ namespace GAMERS_TECH.Views
             }
         }
 
-        private void SService_ProgressReportB(EMTInfo obj)
+        private void SService_ProgressReportB(EMTInfo obj,string caseid)
         {
-            if (obj!=null)
+            if (obj!=null && caseid == info[0])
             {
-                Dispatcher.Invoke(async()=>
+                Dispatcher.Invoke(()=>
                 {
                     EMTList = obj;
 
@@ -121,12 +144,11 @@ namespace GAMERS_TECH.Views
                     teamMeans.Text += EMTList.Type;
                     teamphone.Text += EMTList.Phone;
 
-                    ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Successfully assigned case", Brushes.Green);
+                    ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Successfully assignedTransporter", Brushes.Green);
 
-                    await ContactEMT();
                 });
             }
-            else if (obj == null)
+            else if (obj == null && caseid == info[0])
             {
                 Dispatcher.Invoke(delegate
                 {
@@ -138,9 +160,9 @@ namespace GAMERS_TECH.Views
             
         }
 
-        private void SService_ProgressReportA(ResponseViewModel obj)
+        private void SService_ProgressReportA(ResponseViewModel obj,string caseid)
         {
-            if (obj != null)
+            if (obj != null && caseid == info[0])
             {
                 Dispatcher.Invoke(() =>
                 {
@@ -156,7 +178,7 @@ namespace GAMERS_TECH.Views
 
                 });
             }
-            else if (obj == null)
+            else if (obj == null && caseid == info[0])
             {
                 Dispatcher.Invoke(delegate
                 {
@@ -168,30 +190,20 @@ namespace GAMERS_TECH.Views
 
         private void SService_SendingSuccess(string response, string view, string sender)
         {
-                if (sender == user.UserId && view == "Case" && response != "failed")
+                if (sender == info[0] && view == "Case" && response != "failed")
                 {
                     Dispatcher.Invoke(() => ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Transporter contacted, waiting for response", Brushes.MediumBlue));
                 }
-                else if (sender == user.UserId && view == "Case" && response == "failed")
+                else if (sender == info[0] && view == "Case" && response == "failed")
                 {
-                    Dispatcher.Invoke(async () =>
+                    Dispatcher.Invoke(() =>
                     {
-                        if (Emttrial == 0)
-                        {
-                            Emttrial += 1;
-                            ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Failed to contact transporter, trying again...", Brushes.Red);
-                            await Task.Delay(1000);
-                            await ContactEMT();
-                        }
-                        else if (Emttrial > 0)
-                        {
-                            ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Failed to contact transporter, attempting to call...", Brushes.Red);
-                            await Task.Delay(1000);
-                        }
-                        Emttrial += 1;
+                       
+                        ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Failed to contact transporter.", Brushes.Red);
+                       
                     });
                 }
-                else if (sender == user.UserId && view == "CHW" && response != "failed")
+                else if (sender == info[0] && view == "CHW" && response != "failed")
                 {
                     Dispatcher.Invoke(() =>
                     {
@@ -201,22 +213,12 @@ namespace GAMERS_TECH.Views
 
                     });
                 }
-                else if (sender == user.UserId && view == "CHW" && response == "failed")
+                else if (sender == info[0] && view == "CHW" && response == "failed")
                 {
-                    Dispatcher.Invoke(async () =>
+                    Dispatcher.Invoke(() =>
                     {
-                        if (Chwtrial == 0)
-                        {
-                            Chwtrial += 1;
-                            ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Failed to contact health worker, trying again...", Brushes.Red);
-                            await Task.Delay(1000);
-                            await ContactCHW();
-                        }
-                        else if (Chwtrial > 0)
-                        {
-                            ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Failed to contact health worker, attempting to call...", Brushes.Red);
-                            await Task.Delay(1000);
-                        }
+                       ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Failed to contact health worker.", Brushes.Red);
+                        
 
                     });
                 }
@@ -239,104 +241,110 @@ namespace GAMERS_TECH.Views
             location.Text = "Location: " + info[2] + ", " + info[3];
             string[] coords = info[2].Split(",");
 
-            ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Starting emergency protocol", Brushes.Gray);
             vhtCode = info[4];
-           
-            Task.Run(delegate { Dispatcher.Invoke(() => ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Loading VHT info", Brushes.MediumBlue)); });
+            List<Task> tasks = new List<Task>();
+            tasks.Add(Task.Run(async()=> await LoadVHTinfo()));
+            tasks.Add(Task.Run(async () => await LoadEMTInfo()));
+            tasks.Add(Task.Run(async () => await LoadMEDInfo()));
+            tasks.Add(Task.Run(async () => await LoadCaseLogs()));
 
-            LoadVHTinfo("new");
-
-            LoadEMTInfo("new");
-
-            LoadMEDInfo("new");
 
         }
 
-        private void LoadMEDInfo(string v)
+        private async Task LoadMEDInfo()
         {
-            List<string> villa = new List<string>() { info[3] };
-            Task.Run(async () =>
+            var response = await StaticHelpers.httpclient.GetAsync(String.Format(StaticHelpers.ServerBaseAddress + "/loadactivecase?caseid={0}&user={1}", info[0], "MED"));
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
             {
-                await Dispatcher.Invoke(async () =>
-                {
-                    ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Assigning case to community health worker", Brushes.MediumBlue);
-                    if (v == "new" || MedList == null)
-                        await sService.ResponseCalls("MED",user, villa);
-                });
-            });
+                Dispatcher.Invoke(() =>
+                    {
+                        MedList = JsonConvert.DeserializeObject<MedicalInfo>(result);
+                        medicalId.Text += MedList.ID;
+                        medicalStat.Text += MedList.Status;
+                        medicalContact.Text += MedList.Phone;
+
+                    });
+            }
+            
         }
 
-        private void LoadEMTInfo(string v)
+        private async Task LoadEMTInfo()
         {
-            List<string> villa = new List<string>() { info[3]};
-            Task.Run(async () =>
+            var response = await StaticHelpers.httpclient.GetAsync(String.Format(StaticHelpers.ServerBaseAddress + "/loadactivecase?caseid={0}&user={1}", info[0], "EMT"));
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
             {
-                await Dispatcher.Invoke(async () =>
+                Dispatcher.Invoke(() =>
                 {
-                    ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Assigning response team/transporter", Brushes.MediumBlue);
+                    EMTList = JsonConvert.DeserializeObject<EMTInfo>(result);
+                    teamId.Text += EMTList.TeamID;
+                    teamMeans.Text += EMTList.Type;
+                    teamphone.Text += EMTList.Phone;
 
-                    if (v == "new" || EMTList == null)
-                        await sService.ResponseCalls("EMT",user, villa);
                 });
-            });
+            }
         }
 
         private void ResponsePage_Loaded(object sender, RoutedEventArgs e)
         {
+            LoadingWindow loadingwindow = new LoadingWindow();
+            loadingwindow.Show();
             string[] coords = info[2].Split(",");
-            TrackingMap.Navigate(String.Format("https://www.doctorsarch.org/gamers_assets/?map=true&lat={0}&lon={1}",coords[0],coords[1]));
-            TrackingMap.Loaded += delegate
-             {
-                 ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Location loaded", Brushes.Gray);
-             };
+            TrackingMap.Navigate(String.Format("https://gamers2.pagekite.me/maps?lat={0}&lon={1}", coords[0],coords[1]));
+            TrackingMap.NavigationCompleted += TrackingMap_NavigationCompleted;
         }
 
-        private void LoadVHTinfo(string kind)
+        private void TrackingMap_NavigationCompleted(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationCompletedEventArgs e)
         {
-                Task.Run(async () => {
-                await Dispatcher.Invoke(async() =>
+            if (e.IsSuccess)
+            {
+                ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Location loaded", Brushes.Gray);
+                Home.CloseLoadingWindow?.Invoke("close");
+            }
+            else
+            {
+                ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Internet error", Brushes.Gray);
+                Home.CloseLoadingWindow?.Invoke("close");
+            }
+        }
+
+        private async Task LoadVHTinfo()
+        {
+            var response = await StaticHelpers.httpclient.GetAsync(String.Format(StaticHelpers.ServerBaseAddress + "/loadactivecase?caseid={0}&user={1}", info[4], "VHT"));
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                Dispatcher.Invoke(() =>
                 {
-                    if (kind == "new" || viewdata == null)
-                        await sService.ResponseCalls("VHT", user, detailsList);
+                    viewdata = JsonConvert.DeserializeObject<ResponseViewModel>(result);
+                    VHTinfo.Content = viewdata.Fullname;
+                    Kinsphone.Text = "Kins phone: " + viewdata.Kin_phone;
+                    VHTphone.Text = "Phone: " + viewdata.Phone;
+                    VHTvillage.Text = "Village: " + viewdata.VHTVillage;
 
                 });
+            }
+        }
+
+        private async Task LoadCaseLogs()
+        {
+            var response = await StaticHelpers.httpclient.GetAsync(String.Format(StaticHelpers.ServerBaseAddress + "/loadactivecase?caseid={0}&user={1}", info[0], "logs"));
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    var sarray = result.Split(";");
+                    foreach (var i in sarray)
+                    {
+                        ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: {i}", Brushes.CadetBlue);
+                    }
 
                 });
-
-
-            
+            }
         }
 
-        public async Task ContactEMT()
-        {
-            Dispatcher.Invoke(() => ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Contacting transporter", Brushes.MediumBlue));
-
-            SMSDetails sms = new SMSDetails()
-            {
-                Number = EMTList.Phone,
-                Message = "Emmergency alert! You have been assigned a pick up case from " + viewdata.VHTVillage + ". Do you accept this case. (reply yes/no)",
-                View = "Case",
-                Sender = user.UserId
-
-            };
-
-            await Dispatcher.Invoke(async () => await sService.SendSMS(sms));
-            
-        }
-        public async Task ContactCHW()
-        {
-            Dispatcher.Invoke(() => ProgressUpdate($"{DateTime.Now.ToLongTimeString()}: Contacting Community health worker", Brushes.MediumBlue));
-
-            SMSDetails sms = new SMSDetails()
-            {
-                Number = MedList.Phone,
-                Message = $"NEW CASE! (#{info[0]})  You have been assigned a case in {viewdata.VHTVillage }. Check app for more information.",
-                View = "CHW",
-                Sender = user.UserId
-
-            };
-            await Dispatcher.Invoke(async () => await sService.SendSMS(sms));
-        }
         public void ProgressUpdate(string prog, Brush color)
         {
             TextBlock text = new TextBlock
@@ -358,13 +366,36 @@ namespace GAMERS_TECH.Views
             switch (btn.Content)
             {
                 case "Minimise":
-                    BtnClicked?.Invoke("minimise");
+                    BtnClicked?.Invoke("Close");
                     break;
-                case "Cancel":
+                case "False Alarm":
                     BtnClicked?.Invoke("Cancel");
                     break;
-
+                case "Restart":
+                    BtnClicked?.Invoke("restart");
+                    break;
+                case "Completed":
+                    BtnClicked?.Invoke("completed");
+                    break;
             }
+        }
+
+        private void ListViewItem_Selected(object sender, RoutedEventArgs e)
+        {
+            PhoneWindow phone = new PhoneWindow(viewdata.Phone);
+            phone.Show();
+        }
+
+        private void ListViewItem2_Selected(object sender, RoutedEventArgs e)
+        {
+            PhoneWindow phone = new PhoneWindow(EMTList.Phone);
+            phone.Show();
+        }
+
+        private void ListViewItem3_Selected(object sender, RoutedEventArgs e)
+        {
+            PhoneWindow phone = new PhoneWindow(MedList.Phone);
+            phone.Show();
         }
     }
 

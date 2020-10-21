@@ -1,8 +1,10 @@
 ﻿using GAMERS_TECH.Views;
 using Microsoft.AspNetCore.SignalR.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Telerik.Windows.Controls;
 
 namespace GAMERS_TECH
 {
@@ -21,82 +24,188 @@ namespace GAMERS_TECH
     public partial class Home : Window
     {
         UserData User;
+        private string uri;
         HubConnection connection;
         ConnService signalService;
         PersonnelInfoViewModel persons;
+        private SchedulePage schedule;
+        private PaymentPage paypage;
+        private LoadingWindow loadingWindow;
         StatusModel stat;
-        public List<AgentsModel> AgentsList;
-        List<UsersRank> Usersrank;
         private int count=30;
         private DispatcherTimer timer;
+        private static ConnService sService;
 
-        public  Home(UserData Userinfo)
+        public static event Action<string[]> Respond;
+        public static Action<string> CloseLoadingWindow;
+        public static Action CloseHomeWindow;
+
+        public  Home(UserData Userinfo,string uri)
         {
             InitializeComponent();
-            User = Userinfo;
-            Loaded += Home_Loaded;
-            string NameChip = "Hi, "+ User.Firstname+" "+ User.Surname;
-
-            Usersrank = new List<UsersRank>();
-            stat = new StatusModel
+            try
             {
-                UserId = User.UserId,
-                Status = "Active"
-            };
-            string BaseUri = String.Format("http://{0}:{1}/updates", Environment.GetEnvironmentVariable("GamersServerUri"), Environment.GetEnvironmentVariable("CommPort"));
-            connection = new HubConnectionBuilder()
-               .WithUrl(BaseUri)
-               .Build();
 
-            connection.Closed += async (error) =>
-            {
-                await Task.Delay(5000);
-                 await ServerConnect();
-                await signalService.SendStatus(stat);
-            };
-           
-            CasesPage.AlertEvent += CasesPage_AlertEvent;
-           
-            signalService = new ConnService(connection);
-            signalService.StatusReceived += Cos_StatusReceived;
-            
+                User = Userinfo;
+                this.uri = uri;
+                Loaded += Home_Loaded;
+                string NameChip = "Hi, " + User.Firstname + " " + User.Surname;
+                stat = new StatusModel
+                {
+                    UserId = User.UserId,
+                    Status = "Active"
+                };
 
-            Task.Run(async()=> await ServerConnect());
+                connection = new HubConnectionBuilder()
+                   .WithUrl(uri + "/updates")
+                   .Build();
 
-            LoadAgents();
-            persons = new PersonnelInfoViewModel();
-           
-            signalService.DisconnectUser += (string obj) =>
-              {
-                  
-                  Task.Run(async() =>
+                connection.Closed += async (error) =>
+                {
+                    await Task.Delay(5000);
+                    await ServerConnect();
+                    await signalService.SendStatus(stat);
+
+                    CloseHomeWindow?.Invoke();
+                };
+
+                this.StateChanged += Home_StateChanged;
+
+
+                signalService = new ConnService(connection);
+
+                signalService.StatusReceived += Cos_StatusReceived;
+
+                signalService.AlertReceived += CasesPage_AlertEvent;
+
+                Task.Run(async () =>
+                {
+                    await ServerConnect();
+                    
+                });
+                
+                persons = new PersonnelInfoViewModel();
+                schedule = new SchedulePage();
+                paypage = new PaymentPage();
+                loadingWindow = new LoadingWindow();
+
+                signalService.NewUserSync += async(string id) =>
+                 {
+                     await signalService.ConnectionSync(User.UserId);
+                 };
+
+                signalService.DisconnectUser += (string obj) =>
                   {
-                      await signalService.SendStatus(stat);
-                      await Helpers.UpdateStatus(stat.Status, stat.UserId);
-                  });
-              };
-            LoadMap();
 
-            HistoryPage.historyItem += (HistoryModel obj) =>
+                      Task.Run(async () =>
+                      {
+                          await signalService.SendStatus(stat);
+                          await signalService.UpdateStatus(stat.Status, stat.UserId);
+                      });
+                  };
+                LoadMap();
+
+                HistoryPage.historyItem += (HistoryModel obj) =>
+                {
+                    MainHolder.Visibility = Visibility.Visible;
+                    browser.Visibility = Visibility.Collapsed;
+                    Dispatcher.Invoke(() => MainHolder.NavigationService.Navigate(new CaseDetails(obj)));
+                };
+
+
+
+                this.Closing += MainWindow_Closing;
+
+                sService = signalService;
+
+
+
+                Respond += (string[] details) =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        ResponseView.Visibility = Visibility.Visible;
+                        browser.Visibility = Visibility.Collapsed;
+                        var rpage = new ResponsePage(User, signalService, details);
+                        Response.NavigationService.Navigate(rpage);
+
+
+                        rpage.BtnClicked += (string obj) =>
+                        {
+                            switch (obj)
+                            {
+                                case "Close":
+                                    ResponseView.Visibility = Visibility.Collapsed;
+                                    browser.Visibility = Visibility.Visible;
+                                    RestoreButton.Visibility = Visibility.Visible;
+                                    break;
+                                case "restart":
+                                    CasesModel alert = new CasesModel()
+                                    {
+                                        DateTime = Convert.ToDateTime(details[5]),
+                                        Location = details[2],
+                                        VHTCode = details[4],
+                                        Description = details[6],
+                                        Village = details[3],
+                                        Status = "ongoing",
+                                        CaseId = details[0],
+                                        Category = details[7]
+                                        
+                                    };
+                                    Dispatcher.Invoke(async () => {
+                                        await signalService.RestartResponse(details[0]);
+                                    });
+                                    break;
+                                case "completed":
+                                    Dispatcher.Invoke(() => {
+                                        RadWindow.Confirm("Are you sure you want to mark case as completed?", async delegate
+                                        {
+                                            await signalService.CompletedCase(details[0]);
+                                            RadWindow.Alert("This case has been marked as completed.", MarkCaseCompleted);
+                                        });
+                                        
+                                    });
+                                    break;
+                            }
+                        };
+                    });
+
+                };
+            }
+            catch(Exception ex)
             {
-                MainHolder.Visibility = Visibility.Visible;
-                browser.Visibility = Visibility.Collapsed;
-                Dispatcher.Invoke(() => MainHolder.NavigationService.Navigate(new CaseDetails(obj)));
-            };
-
-            
-
-            this.Closing += MainWindow_Closing;
-            
+                MessageBox.Show(ex.Message);
+            }
 
         }
 
-        private void CasesPage_AlertEvent(UserData arg1, CasesModel arg2, List<CasesModel> arg3)
+        private void MarkCaseCompleted(object sender, WindowClosedEventArgs e)
+        {
+            ResponseView.Visibility = Visibility.Collapsed;
+            browser.Visibility = Visibility.Visible;
+        }
+
+        private void Home_StateChanged(object sender, EventArgs e)
+        {
+            if(this.WindowState == WindowState.Minimized)
+            {
+                if(loadingWindow.IsVisible)
+                    CloseLoadingWindow?.Invoke("close");
+            }
+            else
+            {
+                if(!browser.IsLoaded)
+                    if(!loadingWindow.IsVisible)
+                        loadingWindow.Show();
+            }
+        }
+
+        private void CasesPage_AlertEvent(CasesModel arg2)
         {
 
             if (User.Rank == "1")
             {
-                int index = arg3.FindIndex(agent => agent.CaseId.Equals(arg2.CaseId, StringComparison.Ordinal));
+
                 Sender sender = new Sender()
                 {
                     UserId = User.UserId,
@@ -104,8 +213,8 @@ namespace GAMERS_TECH
                     Response = "accept"
                 };
 
-                
-                string[] details = { arg2.CaseId, User.UserId, arg3[index].Location, arg3[index].Village, arg3[index].VHTCode, arg3[index].DateTime.ToString(), arg3[index].Description };
+
+                string[] details = { arg2.CaseId, User.UserId, arg2.Location, arg2.Village, arg2.VHTCode, arg2.DateTime.ToString(), arg2.Description };
                 Dispatcher.Invoke(() => alertDialog.Visibility = Visibility.Visible);
                 AcceptBtn.Click += delegate
                 {
@@ -114,15 +223,18 @@ namespace GAMERS_TECH
                         alertDialog.Visibility = Visibility.Collapsed;
                         ResponseView.Visibility = Visibility.Visible;
                         browser.Visibility = Visibility.Collapsed;
-                        Response.NavigationService.Navigate(new ResponsePage(User,signalService,details));
-                        
+                        Response.NavigationService.Navigate(new ResponsePage(User, signalService, details));
 
-                        await CasesPage.SendHandledAlert(sender,details);
+                        timer.IsEnabled = false;
+                        timer.Stop();
+                        await SendHandledAlert(sender, details);
                     });
                 };
                 Decline.Click += delegate
                 {
                     alertDialog.Visibility = Visibility.Collapsed;
+                    timer.IsEnabled = false;
+                    count = 30;
                 };
                 Dispatcher.Invoke(() =>
                 {
@@ -132,7 +244,7 @@ namespace GAMERS_TECH
                     timer.Start();
                 });
 
-                
+
 
             }
         }
@@ -145,21 +257,25 @@ namespace GAMERS_TECH
             {
                 timer.Stop();
                 alertDialog.Visibility = Visibility.Collapsed;
+                timer.IsEnabled = false;
+                count = 30;
+                
             }
-               
+
         }
 
-        
+
         private async void LoadMap()
         {
             await Task.Delay(500);
             browser.IsJavaScriptEnabled = true;
             browser.Navigate("https://www.google.com/maps");
+            
+            browser.NavigationCompleted += delegate
+            {
+                CloseLoadingWindow?.Invoke("close");
+            };
 
-            browser.DOMContentLoaded += delegate
-             {
-                 loadingMap.Visibility = Visibility.Collapsed;
-             };
         }
 
         public void DragEvent(object sender, MouseButtonEventArgs e)
@@ -169,29 +285,30 @@ namespace GAMERS_TECH
 
         protected override void OnClosed(EventArgs e)
         {
+            
             browser.Dispose();
             base.OnClosed(e);
         }
 
-
-        private async void MainWindow_Closing(object sender, CancelEventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
-          Task.Run(() =>
-             {
-                 Dispatcher.Invoke(() =>
-                 {
-                     signalService.Disconnect();
-                 });
-
-             });
+            signalService.Disconnect();
             
-            stat.Status = "Unavailable";
-            await signalService.SendStatus(stat);
-            await Helpers.UpdateStatus(stat.Status, stat.UserId);
+            CloseHomeWindow?.Invoke();
+
+            base.OnClosing(e);
+            
+        }
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+
+            signalService.Disconnect();
+                       
+            CloseHomeWindow?.Invoke();
 
         }
 
-        
+
 
         public async Task ServerConnect()
         {
@@ -200,24 +317,30 @@ namespace GAMERS_TECH
                 await signalService.Connect();
                 await signalService.SendStatus(stat);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            
+
         }
 
-        private void LoadAgents()
+        
+        public static async Task SendHandledAlert(Sender sender, string[] details)
         {
-            AgentsList = Helpers.LoadAgents().Result;
-            
-            foreach (var ag in AgentsList)
+            CasesModel cases = new CasesModel()
             {
-                if (ag.Status == "Status: Active")
-                    ag.Background = Colors.LightGreen;
-                else
-                    ag.Background = Colors.LightPink;
-            }
+                AgentId = details[1],
+                CaseId = details[0],
+                Location = details[2],
+                Village = details[3],
+                VHTCode = details[4],
+                Description = details[6]
+            };
+            await sService.HandleAlert(sender, cases);
+
+            if (sender.Response == "accept")
+                Respond?.Invoke(details);
+
         }
 
         private void Cos_StatusReceived(StatusModel obj)
@@ -228,13 +351,14 @@ namespace GAMERS_TECH
         private void Home_Loaded(object sender, RoutedEventArgs e)
         {
             container.MinWidth = Convert.ToDouble(400);
-            body.NavigationService.Navigate(new Dashboard(User,stat,signalService,AgentsList));
+            body.NavigationService.Navigate(new Dashboard(User,stat,signalService,uri));
+            loadingWindow.Show();
         }
 
         private void DashboardClicked(object sender, RoutedEventArgs e)
         {
             container.MinWidth = Convert.ToDouble(400);
-            body.NavigationService.Navigate(new Dashboard(User,stat,signalService,AgentsList));
+            body.NavigationService.Navigate(new Dashboard(User, stat, signalService,uri));
         }
 
         private void HisotryClicked(object sender, RoutedEventArgs e)
@@ -246,36 +370,14 @@ namespace GAMERS_TECH
         private void PersonnelinfoClicked(object sender, RoutedEventArgs e)
         {
             container.MinWidth = Convert.ToDouble(500);
-            body.NavigationService.Navigate(new Personnelinfo(User,persons, signalService));
+            body.NavigationService.Navigate(new Personnelinfo(User, persons, signalService));
+
         }
 
         private void CasesClicked(object sender, RoutedEventArgs e)
         {
             container.MinWidth = Convert.ToDouble(400);
             body.NavigationService.Navigate(new CasesPage(User, signalService));
-            CasesPage.Respond += (string[] details) =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    ResponseView.Visibility = Visibility.Visible;
-                    browser.Visibility = Visibility.Collapsed;
-                    var rpage = new ResponsePage(User,signalService, details);
-                    Response.NavigationService.Navigate(rpage);
-                    
-
-                    rpage.BtnClicked += (string obj) =>
-                      {
-                          switch (obj)
-                          {
-                              case "minimise":
-                                  ResponseView.Visibility = Visibility.Collapsed;
-                                  browser.Visibility = Visibility.Visible;
-                                  break;
-                          }
-                      };
-                });
-
-            };
 
         }
 
@@ -291,7 +393,50 @@ namespace GAMERS_TECH
         {
             MainHolder.Visibility = Visibility.Collapsed;
             browser.Visibility = Visibility.Visible;
+
+            ListView lv = sender as ListView;
+
+            if (lv.SelectedIndex == 2)
+            {
+                mainBorder.Visibility = Visibility.Visible;
+                browser.Visibility = Visibility.Collapsed;
+                mainFrame.NavigationService.Navigate(schedule);
+            }
+            else if (lv.SelectedIndex == 6)
+            {
+                mainBorder.Visibility = Visibility.Visible;
+                mainFrame.NavigationService.Navigate(paypage);
+                browser.Visibility = Visibility.Collapsed;
+            }
+            else if (lv.SelectedIndex == 7)
+            {
+                mainBorder.Visibility = Visibility.Visible;
+                mainFrame.NavigationService.Navigate(new UserManagementPage());
+                browser.Visibility = Visibility.Collapsed;
+            }
+            else if (lv.SelectedIndex == 10)
+            {
+                MainWindow login = new MainWindow();
+                login.Show();
+            }
+            else
+            {
+                mainBorder.Visibility = Visibility.Collapsed;
+            }
+
         }
-        
+
+
+        private void VisitationSelected(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ResponseView.Visibility = Visibility.Visible;
+            browser.Visibility = Visibility.Collapsed;
+            RestoreButton.Visibility = Visibility.Collapsed;
+        }
     }
 }

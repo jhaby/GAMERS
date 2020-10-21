@@ -37,6 +37,7 @@ namespace GAMERS_TECH
         public string Location { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
+        public int Rank { get; set; }
 
         
     }
@@ -48,6 +49,7 @@ namespace GAMERS_TECH
         public string Phone { get; set; }
         public string Category { get; set; }
         public string Status { get; set; }
+        public int Rank { get; set; }
 
         
     }

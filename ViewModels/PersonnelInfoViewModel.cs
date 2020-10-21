@@ -6,6 +6,8 @@ using MySql.Data.MySqlClient;
 using Dapper;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace GAMERS_TECH
 {
@@ -14,26 +16,23 @@ namespace GAMERS_TECH
         public List<PersonnelData> List { get; private set; }
         public PersonnelInfoViewModel()
         { 
-            List = GetData();
+            List =  GetData();
 
         }
         public List<PersonnelData> GetData()
         {
-            
-            var person = new List<PersonnelData>();
-            var sql = @"SELECT b.UserId,b.Firstname,b.Surname,b.Role,b.Email,b.Phone,b.PhotoPath,t.Status
-                    FROM bio_data b INNER JOIN authentication_table t ON b.UserId = t.UserId ";
-            using (var Conn = new MySqlConnection(Helpers.connectionString))
+            HttpClient client = new HttpClient();
+            var result="";
+            Task.Run(async delegate
             {
-                 person =  Conn.Query<PersonnelData>(sql).ToList();
+                var response = await client.GetAsync(Environment.GetEnvironmentVariable("GamersServerUri")+"/personnelinfo");
+                result = await response.Content.ReadAsStringAsync();
+            });
 
-            }
+            var person = JsonConvert.DeserializeObject<List<PersonnelData>>(result) ?? null ;
 
             return person;
         }
-        public async void SendMessageAsync(string message)
-        {
-            await Task.Run(() => Helpers.SendMessage(message));
-        }
+        
     }
 }

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,47 +16,29 @@ using System.Windows.Shapes;
 
 namespace GAMERS_TECH
 {
-    /// <summary>
-    /// Interaction logic for Dashboard.xaml
-    /// </summary>
     public partial class Dashboard : Page
     {
         
         StatusModel status;
+        private readonly string uri;
         private UserData User;
+        private HttpClient _client;
         List<UsersRank> userRank;
+        private List<AgentsModel> AgentsList;
 
-        public Dashboard(UserData Userinfo,StatusModel stat,ConnService signalService,List<AgentsModel> AgentsList)
+        public Dashboard(UserData Userinfo,StatusModel stat,ConnService signalService,string uri)
         {
             InitializeComponent();
             
             status = stat;
-
+            this.uri = uri;
             User = Userinfo;
             this.DataContext = User;
+            _client = new HttpClient();
 
-           userRank = new List<UsersRank>();
+            userRank = new List<UsersRank>();
 
-            for (var i = 0; i < AgentsList.Count; i++)
-            {
-                if (AgentsList[i].Status == "Status: Active")
-                {
-                    userRank.Add(new UsersRank
-                    {
-                        UserID = AgentsList[i].UserId,
-                        Position = AgentsList[i].Rank,
-                        ConnId = "null"
-                    });
-                }
-            }
-
-            signalService.NewUser += (string obj) =>
-            {
-                Task.Run(async () =>
-                {
-                    await signalService.ConnectionSync(User.UserId, userRank);
-                });
-            };
+            LoadAgents();
 
             signalService.StatusReceived += (StatusModel obj) =>
             {
@@ -64,7 +48,7 @@ namespace GAMERS_TECH
                     status.Status = obj.Status;
                     User.Status = obj.Status;
                     AgentsList[index].Status = obj.Status;
-                    if (AgentsList[index].Status == "Status: Active")
+                    if (AgentsList[index].Status == "Active")
                         AgentsList[index].Background = Colors.LightGreen;
                     else
                         AgentsList[index].Background = Colors.LightPink;
@@ -73,27 +57,24 @@ namespace GAMERS_TECH
                 {
                     
                     AgentsList[index].Status = obj.Status;
-                    if (AgentsList[index].Status == "Status: Active")
+                    if (AgentsList[index].Status == "Active")
                         AgentsList[index].Background = Colors.LightGreen;
                     else
                         AgentsList[index].Background = Colors.LightPink;
                 }
             };
-            agentslist.ItemsSource = AgentsList;
+            
 
             signalService.Ranking += (List<UsersRank> obj) =>
             {
+                userRank = obj;
+
                 int index = obj.FindIndex(ag => ag.UserID.Equals(User.UserId, StringComparison.Ordinal));
                 User.Rank = obj[index].Position.ToString();
                 
                 for (var i=0;i< AgentsList.Count;i++){
                     int pos = obj.FindIndex(ag => ag.UserID.Equals(AgentsList[i].UserId, StringComparison.Ordinal));
                     AgentsList[i].Rank = obj[pos].Position;
-                }
-                for (var i = 0; i < userRank.Count; i++)
-                {
-                    int pos = obj.FindIndex(ag => ag.UserID.Equals(userRank[i].UserID, StringComparison.Ordinal));
-                    userRank[i].Position = obj[pos].Position;
                 }
             };
 
@@ -105,11 +86,10 @@ namespace GAMERS_TECH
                 status.Status = "Unavailable";
                 Task.Run(async () => {
                     await signalService.SendStatus(status);
-                    await Helpers.UpdateStatus(status.Status, status.UserId);
+                    await signalService.UpdateStatus(status.Status, status.UserId);
 
                     int index = userRank.FindIndex(ag => ag.UserID.Equals(User.UserId, StringComparison.Ordinal));
-                    userRank.RemoveAt(index);
-                    
+                    userRank[index].Position = 0;
                     await signalService.ReorderList("remove",index, userRank);
                     User.Rank = "";
                 });
@@ -123,14 +103,18 @@ namespace GAMERS_TECH
                 status.Status = "Active";
                 Task.Run(async () => {
                     await signalService.SendStatus(status);
-                    await Helpers.UpdateStatus(status.Status, status.UserId);
-
-                    userRank.Add(new UsersRank
+                    await signalService.UpdateStatus("Active", status.UserId);
+                    if (!userRank.Exists(ag => ag.UserID == User.UserId))
                     {
-                        UserID = User.UserId,
-                        ConnId = ""
-                    });
-                    await signalService.ReorderList("add", userRank.Count, userRank);
+                        userRank.Add(new UsersRank
+                        {
+                            UserID = User.UserId,
+                            ConnId = ""
+                        });
+                    }
+
+                    int index = userRank.FindIndex(ag => ag.UserID.Equals(User.UserId, StringComparison.Ordinal));
+                    await signalService.ReorderList("add", index, userRank);
 
                 });
 
@@ -138,7 +122,7 @@ namespace GAMERS_TECH
                 
             };
 
-            if (User.Status == "Status: Active")
+            if (User.Status == "Active")
                 StatusToggle.IsChecked = true;
             else
                 StatusToggle.IsChecked = false;
@@ -146,8 +130,34 @@ namespace GAMERS_TECH
             
 
         }
+        private async void LoadAgents()
+        {
+            var response = await _client.GetAsync(uri + "/loadagents");
+            var result = await response.Content.ReadAsStringAsync();
+            AgentsList = JsonConvert.DeserializeObject<List<AgentsModel>>(result);
 
-        
+            foreach (var ag in AgentsList)
+            {
+                if (ag.Status == "Active")
+                {
+                    userRank.Add(new UsersRank
+                    {
+                        UserID = ag.UserId,
+                        Position = ag.Rank,
+                        ConnId = "null"
+                    });
+
+                     ag.Background = Colors.LightGreen;
+                    
+                }
+                else
+                    ag.Background = Colors.LightPink;
+            }
+
+            agentslist.ItemsSource = AgentsList;
+
+        }
+
 
     }
 

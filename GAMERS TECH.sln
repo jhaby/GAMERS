@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GAMERS TECH", "GAMERS TECH.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConnectionsServer", "..\ConnectionsServer\ConnectionsServer.csproj", "{2274D17E-23FE-4BD5-9A72-8C35926B6B93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gamersService", "..\gamersService\gamersService.csproj", "{1759EBF0-8A55-4593-800D-DF567CFAFB1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{2274D17E-23FE-4BD5-9A72-8C35926B6B93}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2274D17E-23FE-4BD5-9A72-8C35926B6B93}.Release|x64.ActiveCfg = Release|Any CPU
 		{2274D17E-23FE-4BD5-9A72-8C35926B6B93}.Release|x64.Build.0 = Release|Any CPU
+		{1759EBF0-8A55-4593-800D-DF567CFAFB1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1759EBF0-8A55-4593-800D-DF567CFAFB1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1759EBF0-8A55-4593-800D-DF567CFAFB1B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1759EBF0-8A55-4593-800D-DF567CFAFB1B}.Debug|x64.Build.0 = Debug|Any CPU
+		{1759EBF0-8A55-4593-800D-DF567CFAFB1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1759EBF0-8A55-4593-800D-DF567CFAFB1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1759EBF0-8A55-4593-800D-DF567CFAFB1B}.Release|x64.ActiveCfg = Release|Any CPU
+		{1759EBF0-8A55-4593-800D-DF567CFAFB1B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

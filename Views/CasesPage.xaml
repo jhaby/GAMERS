@@ -30,7 +30,8 @@
                                             Background="LightSeaGreen"
                                             Width="90"
                                             BorderBrush="Transparent"
-                                            Command="{Binding Sendcommand}"
+                                Tag="{Binding CaseId}"
+                                Command="{Binding Sendcommand}"
                                             Margin="2,0">
                                 <TextBlock FontSize="10" Text="Handle"/>
                             </Button>
@@ -59,23 +60,7 @@
                 <ListView Grid.Column="0" x:Name="cases" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource ResourceKey=Case}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
                    
                 </ListView>
-                <materialDesign:Card Width="400" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="alertDialog" Visibility="Collapsed">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="95"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock FontWeight="Bold" Grid.Column="0" Grid.ColumnSpan="2" Padding="5" Text="Emergency alert" FontSize="20" Foreground="Black" Grid.Row="0"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Padding="10" TextWrapping="WrapWithOverflow" FontSize="18" Text="You have been assigned a case to handle. Do you accpet it?"/>
-                        <Button Grid.Column="0" Grid.Row="2" Background="CornflowerBlue" BorderBrush="Transparent" x:Name="AcceptBtn">Accept</Button>
-                        <Button Grid.Column="1" Grid.Row="2" Background="IndianRed" BorderBrush="Transparent" x:Name="Decline" Click="Decline_Click">Decline</Button>
-                    </Grid>
-                </materialDesign:Card>
+                
             </Grid>
             <materialDesign:DialogHost.DialogContent>
                 <Grid>

@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Newtonsoft.Json;
+using System.Windows.Threading;
 
 namespace GAMERS_TECH
 {
@@ -21,9 +18,7 @@ namespace GAMERS_TECH
         private static ConnService sService;
         private CasesViewModel Items;
         private UserData User;
-        public static event Action<UserData,CasesModel, List<CasesModel>> AlertEvent;
-        public static event Action<string[]> Respond;
-
+       
         public CasesPage (UserData userinfo, ConnService signalService)
         {
             InitializeComponent();
@@ -48,7 +43,6 @@ namespace GAMERS_TECH
         {
             Items.Reload(User);
             CollectionViewSource.GetDefaultView(cases.ItemsSource).Refresh();
-            AlertEvent?.Invoke(User,obj,Items.Items);
         }
         
 
@@ -57,26 +51,28 @@ namespace GAMERS_TECH
             Items.Reload(User);
             CollectionViewSource.GetDefaultView(cases.ItemsSource).Refresh();
         }
-        public static async Task SendHandledAlert(Sender sender,string[] details)
-        {
-            CasesModel cases = new CasesModel()
-            {
-                AgentId = details[1],
-                CaseId = details[0],
-                Location = details[2],
-                Village = details[3],
-                VHTCode = details[4],
-                Description = details[6]
-            };
-            await sService.HandleAlert(sender,cases);
+       
 
-            Respond?.Invoke(details);
-        }
+        //private void Decline_Click(object sender, RoutedEventArgs e)
+        //{
+        //}
 
-        private void Decline_Click(object sender, RoutedEventArgs e)
-        {
-            alertDialog.Visibility = Visibility.Collapsed;
-        }
+        //private async void Handle_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Button handle = sender as Button;
+
+        //    int index = Items.Items.FindIndex(ag => ag.CaseId.Equals(handle.Tag.ToString(), StringComparison.OrdinalIgnoreCase));
+
+        //    Sender agent = new Sender()
+        //    {
+        //        UserId = Items.Items[index].AgentId,
+        //        CaseId = Items.Items[index].CaseId,
+        //        Response = "accept"
+        //    };
+
+        //    string[] details = { Items.Items[index].CaseId, Items.Items[index].AgentId, Items.Items[index].Location, Items.Items[index].Village, Items.Items[index].VHTCode, Items.Items[index].DateTime.ToString(), Items.Items[index].Description };
+        //    await Home.SendHandledAlert(agent, details);
+        //}
     }
 
 
@@ -105,28 +101,42 @@ namespace GAMERS_TECH
         public CasesViewModel(UserData user, ConnService signal)
         {
             sService = signal;
-            Items = ItemList(user,signal);
+            Items = new List<CasesModel>();
+            Items.Clear();
+            Dispatcher.CurrentDispatcher.Invoke(async() =>  await ItemList(user, signal));
+            
         }
 
-        public List<CasesModel> ItemList(UserData user, ConnService signal)
+        public async Task ItemList(UserData user, ConnService signal)
         {
-            Items = Helpers.LoadCases().Result;
-
-            foreach (var s in Items)
+            
+            try
             {
-                s.AgentId = user.UserId;
-                s.signalService = signal;
-                
+                var response = await StaticHelpers.httpclient.GetAsync(Environment.GetEnvironmentVariable("GamersServerUri") + "/loadcases");
+                var result = await response.Content.ReadAsStringAsync();
+
+                Items = JsonConvert.DeserializeObject<List<CasesModel>>(result);
+
+                foreach (var s in Items)
+                {
+                    s.AgentId = user.UserId;
+                    s.signalService = signal;
+
+                }
+
+               
+            }
+            catch
+            {
+                MessageBox.Show(Environment.GetEnvironmentVariable("GamersServerUri"));
             }
 
-            return Items;
-
         }
 
 
-        public void Reload(UserData user)
+        public async void Reload(UserData user)
         {
-            Items = ItemList(user,sService);
+             await ItemList(user,sService);
         }
 
     }
@@ -203,7 +213,7 @@ namespace GAMERS_TECH
             };
 
             string[] details = { caseId, AgentId, Location, village, vHTCode, dateTime.ToString(), description };
-            await CasesPage.SendHandledAlert(sender, details);
+            await Home.SendHandledAlert(sender, details);
         }
 
         private async void ExecuteCommand(object obj)
@@ -215,8 +225,8 @@ namespace GAMERS_TECH
                 Response = "accept"
             };
 
-            string[] details = { caseId, AgentId, Location, village, vHTCode, dateTime.ToString(), description };
-            await CasesPage.SendHandledAlert(sender, details);
+            string[] details = { caseId, AgentId, Location, village, vHTCode, dateTime.ToString(), description,category };
+            await Home.SendHandledAlert(sender, details);
 
 
         }

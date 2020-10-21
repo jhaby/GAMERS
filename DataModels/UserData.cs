@@ -19,6 +19,7 @@ namespace GAMERS_TECH
         public int HandledAlerts { get; set; }
         public int MissedAlerts { get; set; }
         public string Firstname { get; set; }
+        public string Target { get; set; }
         public string Surname { get; set; }
         public string AuthToken { get; set; }
         public string Language { get => "Language: " + language; set => language = value; }
@@ -36,7 +37,7 @@ namespace GAMERS_TECH
         {
             get
             {
-                return "Status: " + status;
+                return status;
             }
             set
             {
@@ -44,8 +45,7 @@ namespace GAMERS_TECH
                 OnPropertyChanged("Status");
             }
         }
-
-
+        
         public string Fullname
         {
             get

@@ -20,6 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\phone_dail.mp3" />
     <None Remove="Resources\avatar2.png" />
     <None Remove="Resources\dorc.png" />
     <None Remove="Resources\logo2.png" />
@@ -50,11 +51,26 @@
     <Reference Include="MaterialDesignThemes.Wpf">
       <HintPath>E:\projects\MaterialDesignInXamlToolkit-master\MaterialDesignThemes.Wpf\obj\Debug\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Telerik.Pivot.Core">
+      <HintPath>e:\projects\telerik\binaries\wpf45\Telerik.Pivot.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Telerik.Windows.Controls">
       <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="Telerik.Windows.Controls.ConversationalUI">
+      <HintPath>e:\projects\telerik\binaries\wpf45\telerik.windows.controls.conversationalui.dll</HintPath>
+    </Reference>
     <Reference Include="Telerik.Windows.Controls.Data">
       <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Controls.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Docking">
+      <HintPath>e:\projects\telerik\binaries\wpf45\telerik.windows.controls.docking.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.GridView">
+      <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Controls.GridView.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.GridView.Export">
+      <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Controls.GridView.Export.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Controls.Input">
       <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Controls.Input.dll</HintPath>
@@ -62,11 +78,29 @@
     <Reference Include="Telerik.Windows.Controls.Navigation">
       <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Controls.Navigation.dll</HintPath>
     </Reference>
+    <Reference Include="Telerik.Windows.Controls.Pivot">
+      <HintPath>e:\projects\telerik\binaries\wpf45\telerik.windows.controls.pivot.dll</HintPath>
+    </Reference>
     <Reference Include="Telerik.Windows.Controls.ScheduleView">
       <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Controls.ScheduleView.dll</HintPath>
     </Reference>
+    <Reference Include="Telerik.Windows.Controls.Spreadsheet">
+      <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Controls.Spreadsheet.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Data">
+      <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Core">
+      <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Documents.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml">
+      <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="Telerik.Windows.Themes.Windows8">
       <HintPath>E:\projects\Telerik\Binaries.NoXaml\NetCore\Telerik.Windows.Themes.Windows8.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Zip">
+      <HintPath>E:\projects\Telerik\Binaries\NetCore\Telerik.Windows.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Ubiety.Dns.Core">
       <HintPath>E:\backup\tetra-cs\packages\MySql.Data.8.0.19\lib\netstandard2.1\Ubiety.Dns.Core.dll</HintPath>
@@ -74,6 +108,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\phone_dail.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\avatar2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -89,10 +126,6 @@
     <Resource Include="Resources\splash.JPG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Assets\" />
   </ItemGroup>
 
 </Project>

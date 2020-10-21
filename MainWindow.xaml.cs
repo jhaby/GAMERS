@@ -23,6 +23,8 @@ namespace GAMERS_TECH
         private HttpClient client;
         private string result;
 
+        public string uri;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -40,21 +42,22 @@ namespace GAMERS_TECH
                     File.Create(@"C:\Gamers\Server_uri\server.json").Close();
                     var server = new ServerFile()
                     {
-                        Remote = "www.doctorsarch.org",
-                        Local = "localhost",
+                        Remote = "https://gamers.pagekite.me",
+                        Local = "http://localhost",
                         CommPort = "5000"
                     };
                     var server_uri = JsonConvert.SerializeObject(server);
                     File.WriteAllText(@"C:\Gamers\Server_uri\server.json", server_uri);
                 }
             }
+
             
            string  serverRaw = File.ReadAllText(@"C:\Gamers\Server_uri\server.json");
             server = JsonConvert.DeserializeObject<ServerFile>(serverRaw);
-            Environment.SetEnvironmentVariable("GamersServerUri", server.Local);
+            Environment.SetEnvironmentVariable("GamersServerUri", server.Local + ":" + server.CommPort);
             Environment.SetEnvironmentVariable("CommPort", server.CommPort);
-            
 
+            uri = server.Local + ":" + server.CommPort;
                 
         }
 
@@ -86,7 +89,7 @@ namespace GAMERS_TECH
                 try
                 {
                     client = new HttpClient();
-                    var response = await client.GetAsync("http://" + Environment.GetEnvironmentVariable("GamersServerUri"));
+                    var response = await client.GetAsync(Environment.GetEnvironmentVariable("GamersServerUri"));
                     if (response.IsSuccessStatusCode)
                     {
                         await Task.Run(() => LoginTask(user, pswd));
@@ -94,7 +97,7 @@ namespace GAMERS_TECH
                 }
                 catch(Exception )
                 {
-                    MessageBox.Show(" Unable to connect to server (https://" + Environment.GetEnvironmentVariable("GamersServerUri") + ")");
+                    MessageBox.Show(" Unable to connect to server (" + Environment.GetEnvironmentVariable("GamersServerUri") + ")");
                 }
             }
             progress.Visibility = Visibility.Collapsed;
@@ -106,7 +109,7 @@ namespace GAMERS_TECH
                 try
                 {
 
-                var response = await client.GetAsync("http://"+ Environment.GetEnvironmentVariable("GamersServerUri")+":"+Environment.GetEnvironmentVariable("CommPort")+"/auth?user="+user+"&pswd="+pass);
+                var response = await client.GetAsync(uri+ "/auth?user=" + user + "&pswd=" + pass);
                 result = await response.Content.ReadAsStringAsync();
                 if (result != "null")
                 {
@@ -116,9 +119,11 @@ namespace GAMERS_TECH
 
                     if (Userdata != null)
                     {
-                        Home hm = new Home(Userdata);
+                        
+                        Home hm = new Home(Userdata,uri);
                         hm.Show();
                         this.Close();
+
                     }
                     else
                     {
@@ -136,7 +141,7 @@ namespace GAMERS_TECH
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        MessageBox.Show("Unable to connect to server (" + Environment.GetEnvironmentVariable("GamersServerUri") + ")");
+                        MessageBox.Show(" Unable to connect to server (" + Environment.GetEnvironmentVariable("GamersServerUri") + ")");
                     });
                 }
             
@@ -152,9 +157,16 @@ namespace GAMERS_TECH
         {
             modeValue.Text = modeSelection[mode.SelectedIndex];
             if (modeValue.Text == "Office")
-                Environment.SetEnvironmentVariable("GamersServerUri",server.Local);
+            {
+                Environment.SetEnvironmentVariable("GamersServerUri", server.Local+":"+server.CommPort);
+                uri = Environment.GetEnvironmentVariable("GamersServerUri") + ":" + Environment.GetEnvironmentVariable("CommPort");
+            }
             else
+            {
                 Environment.SetEnvironmentVariable("GamersServerUri", server.Remote);
+                uri = Environment.GetEnvironmentVariable("GamersServerUri");
+            }
+                
         }
     }
     public class ServerFile

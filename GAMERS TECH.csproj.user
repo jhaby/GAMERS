@@ -12,6 +12,12 @@
     <Compile Update="Home.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="IndexWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="LoadingWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\CaseDetails.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -30,6 +36,9 @@
     <Compile Update="Views\LibraryPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\PaymentPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\Personnelinfo.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -39,9 +48,18 @@
     <Compile Update="Views\SchedulePage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UserManagementPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Home.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="IndexWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="LoadingWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
@@ -65,6 +83,9 @@
     <Page Update="Views\LibraryPage.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\PaymentPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\Personnelinfo.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -72,6 +93,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\SchedulePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserManagementPage.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

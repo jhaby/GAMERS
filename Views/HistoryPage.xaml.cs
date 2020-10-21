@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,12 +15,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace GAMERS_TECH
 {
-    /// <summary>
-    /// Interaction logic for HistoryPage.xaml
-    /// </summary>
     public partial class HistoryPage : Page
     {
         ConnService sService;
@@ -64,7 +65,7 @@ namespace GAMERS_TECH
                         Village = historyContext.Items[index].Village,
                         Status = "pending"
                     };
-                    await Helpers.ReinstateCase(alert);
+                    
                     await sService.ReinstateCase(alert);
                     historyContext.RefreshList();
                 }
@@ -97,13 +98,21 @@ namespace GAMERS_TECH
         
         public HistoryViewModel()
         {
-           Items = Helpers.LoadHistoryAsync("history").Result;
-            
-        }
+            Dispatcher.CurrentDispatcher.Invoke(async () => await LoadHistory());
 
-        public void RefreshList()
+        }
+        public async Task LoadHistory()
         {
-            Items = Helpers.LoadHistoryAsync("history").Result;
+            
+            var response = await StaticHelpers.httpclient.GetAsync(Environment.GetEnvironmentVariable("GamersServerUri") + "/loadhistory");
+            var result = await response.Content.ReadAsStringAsync();
+
+            Items = JsonConvert.DeserializeObject<List<HistoryModel>>(result);
+
+        }
+        public async void RefreshList()
+        {
+            await LoadHistory();
         }
         
         public event PropertyChangedEventHandler PropertyChanged;
