@@ -42,7 +42,7 @@ namespace GAMERS_TECH
                     File.Create(@"C:\Gamers\Server_uri\server.json").Close();
                     var server = new ServerFile()
                     {
-                        Remote = "https://gamers.pagekite.me",
+                        Remote = "https://gamers2.pagekite.me",
                         Local = "http://localhost",
                         CommPort = "5000"
                     };

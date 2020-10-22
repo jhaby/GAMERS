@@ -74,9 +74,9 @@ namespace GAMERS_TECH
         {
             await _connection.SendAsync("NewUserStatus", UserId);
         }
-        public async Task ReorderList(string order,int pos,List<UsersRank> UsersList)
+        public async Task ReorderList(string order,string UsersList)
         {
-            await _connection.SendAsync("ReorderRanks",order,pos, UsersList);
+            await _connection.SendAsync("ReorderRanks",order, UsersList);
         }
         public async Task ReinstateCase(CasesModel alert)
         {

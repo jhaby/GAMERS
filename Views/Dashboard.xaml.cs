@@ -23,7 +23,7 @@ namespace GAMERS_TECH
         private readonly string uri;
         private UserData User;
         private HttpClient _client;
-        List<UsersRank> userRank;
+        UsersRank userRank;
         private List<AgentsModel> AgentsList;
 
         public Dashboard(UserData Userinfo,StatusModel stat,ConnService signalService,string uri)
@@ -36,7 +36,7 @@ namespace GAMERS_TECH
             this.DataContext = User;
             _client = new HttpClient();
 
-            userRank = new List<UsersRank>();
+            userRank = new UsersRank();
 
             LoadAgents();
 
@@ -67,7 +67,7 @@ namespace GAMERS_TECH
 
             signalService.Ranking += (List<UsersRank> obj) =>
             {
-                userRank = obj;
+                
 
                 int index = obj.FindIndex(ag => ag.UserID.Equals(User.UserId, StringComparison.Ordinal));
                 User.Rank = obj[index].Position.ToString();
@@ -88,9 +88,8 @@ namespace GAMERS_TECH
                     await signalService.SendStatus(status);
                     await signalService.UpdateStatus(status.Status, status.UserId);
 
-                    int index = userRank.FindIndex(ag => ag.UserID.Equals(User.UserId, StringComparison.Ordinal));
-                    userRank[index].Position = 0;
-                    await signalService.ReorderList("remove",index, userRank);
+                    userRank.Position = 0;
+                    await signalService.ReorderList("remove", User.UserId);
                     User.Rank = "";
                 });
                 User.Status = status.Status;
@@ -104,17 +103,9 @@ namespace GAMERS_TECH
                 Task.Run(async () => {
                     await signalService.SendStatus(status);
                     await signalService.UpdateStatus("Active", status.UserId);
-                    if (!userRank.Exists(ag => ag.UserID == User.UserId))
-                    {
-                        userRank.Add(new UsersRank
-                        {
-                            UserID = User.UserId,
-                            ConnId = ""
-                        });
-                    }
-
-                    int index = userRank.FindIndex(ag => ag.UserID.Equals(User.UserId, StringComparison.Ordinal));
-                    await signalService.ReorderList("add", index, userRank);
+                    
+                    
+                    await signalService.ReorderList("add", User.UserId);
 
                 });
 
@@ -140,12 +131,6 @@ namespace GAMERS_TECH
             {
                 if (ag.Status == "Active")
                 {
-                    userRank.Add(new UsersRank
-                    {
-                        UserID = ag.UserId,
-                        Position = ag.Rank,
-                        ConnId = "null"
-                    });
 
                      ag.Background = Colors.LightGreen;
                     
