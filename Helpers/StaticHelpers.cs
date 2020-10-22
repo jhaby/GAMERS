@@ -5,8 +5,10 @@ using System.Text;
 
 namespace GAMERS_TECH
 {
-    public class ServerConnection
+    public static class StaticHelpers
     {
+        public static string ServerBaseAddress = Environment.GetEnvironmentVariable("GamersServerUri");
+
         public static readonly HttpClient httpclient = new HttpClient();
     }
 }

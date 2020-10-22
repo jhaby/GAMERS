@@ -1,17 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace GAMERS_TECH
 {
@@ -20,43 +18,168 @@ namespace GAMERS_TECH
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<string> modeSelection;
+        private ServerFile server;
+        private HttpClient client;
+        private string result;
+
+        public string uri;
+
         public MainWindow()
         {
             InitializeComponent();
-           
+            modeSelection = new List<string>()
+            {
+                "Office","Remote/Home"
+            };
+            mode.ItemsSource = modeSelection;
+
+            if (!Directory.Exists(@"C:\Gamers\Server_uri") || !File.Exists(@"C:\Gamers\Server_uri\server.json"))
+            {
+                Directory.CreateDirectory(@"C:\Gamers\Server_uri");
+                if (!File.Exists(@"C:\Gamers\Server_uri\server.json"))
+                {
+                    File.Create(@"C:\Gamers\Server_uri\server.json").Close();
+                    var server = new ServerFile()
+                    {
+                        Remote = "https://gamers2.pagekite.me",
+                        Local = "http://localhost",
+                        CommPort = "5000"
+                    };
+                    var server_uri = JsonConvert.SerializeObject(server);
+                    File.WriteAllText(@"C:\Gamers\Server_uri\server.json", server_uri);
+                }
+            }
+
+            
+           string  serverRaw = File.ReadAllText(@"C:\Gamers\Server_uri\server.json");
+            server = JsonConvert.DeserializeObject<ServerFile>(serverRaw);
+            Environment.SetEnvironmentVariable("GamersServerUri", server.Local + ":" + server.CommPort);
+            Environment.SetEnvironmentVariable("CommPort", server.CommPort);
+
+            uri = server.Local + ":" + server.CommPort;
                 
         }
 
-        private void Minimise(object sender, MouseButtonEventArgs e)
+        private void CloseWindow(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            Application.Current.Shutdown();
         }
 
-        private void CloseWindow(object sender, MouseButtonEventArgs e)
+        private async void Login(object sender, RoutedEventArgs e)
         {
-            this.Close();
-        }
-
-        private void Login(object sender, RoutedEventArgs e)
-        {
-            DBConnection db = new DBConnection();
             string user = Username.Text;
+            string Wregion = region.Text;
             string pswd = Password.Password;
-            UserData Userdata = db.Login(user, pswd);
-            if(Userdata.Username != "none")
+            progress.Visibility = Visibility.Visible;
+            if (Username.Text ==  "")
             {
-                Home hm = new Home();
-                hm.Show();
-                this.Close();
+                Username.Focus();
+            }
+            else if(pswd == "")
+            {
+                Password.Focus();
+            }
+            else if(Wregion == "")
+            {
+                region.Focus();
             }
             else
             {
-                MessageBox.Show("Unauthorized user");
+                try
+                {
+                    client = new HttpClient();
+                    var response = await client.GetAsync(Environment.GetEnvironmentVariable("GamersServerUri"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        await Task.Run(() => LoginTask(user, pswd));
+                    }
+                }
+                catch(Exception )
+                {
+                    MessageBox.Show(" Unable to connect to server (" + Environment.GetEnvironmentVariable("GamersServerUri") + ")");
+                }
             }
+            progress.Visibility = Visibility.Collapsed;
+            
 
-            Application.Current.Properties["Userdata"] = Userdata;
+        }
+        private async Task LoginTask(string user, string pass)
+            {
+                try
+                {
+
+                var response = await client.GetAsync(uri+ "/auth?user=" + user + "&pswd=" + pass);
+                result = await response.Content.ReadAsStringAsync();
+                if (result != "null")
+                {
+                    UserData Userdata = JsonConvert.DeserializeObject<UserData>(result);
+                    Dispatcher.Invoke(() =>
+                    {
+
+                    if (Userdata != null)
+                    {
+                        
+                        Home hm = new Home(Userdata,uri);
+                        hm.Show();
+                        this.Close();
+
+                    }
+                    else
+                    {
+                        Dispatcher.Invoke(() => MessageBox.Show("Unauthorised user"));
+                            
+                        }
+                    });
+                }
+                else
+                {
+                    Dispatcher.Invoke(() => MessageBox.Show("Unauthorised user"));
+                }
+            }
+                catch (Exception)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        MessageBox.Show(" Unable to connect to server (" + Environment.GetEnvironmentVariable("GamersServerUri") + ")");
+                    });
+                }
+            
+
         }
 
+        private void StackPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void mode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            modeValue.Text = modeSelection[mode.SelectedIndex];
+            if (modeValue.Text == "Office")
+            {
+                Environment.SetEnvironmentVariable("GamersServerUri", server.Local+":"+server.CommPort);
+                uri = Environment.GetEnvironmentVariable("GamersServerUri") + ":" + Environment.GetEnvironmentVariable("CommPort");
+            }
+            else
+            {
+                Environment.SetEnvironmentVariable("GamersServerUri", server.Remote);
+                uri = Environment.GetEnvironmentVariable("GamersServerUri");
+            }
+                
+        }
+    }
+    public class ServerFile
+    {
+        public string Remote { get; set; }
+        public string Local { get; set; }
+        public string CommPort { get; set; }
 
     }
+    public class LogIn
+    {
+        public string User { get; set; }
+        public string Pass { get; set; }
+    }
+    
 }

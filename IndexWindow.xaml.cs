@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,21 +8,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GAMERS
+namespace GAMERS_TECH
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public partial class IndexWindow : Window
     {
-        public MainWindow()
+        private UserData userinfo;
+        private string uri;
+
+        public IndexWindow(UserData userinfo, string uri)
         {
             InitializeComponent();
-            this.MinWidth = 900;
-            this.MinHeight = 600;
+            this.userinfo = userinfo;
+            this.uri = uri;
         }
     }
 }

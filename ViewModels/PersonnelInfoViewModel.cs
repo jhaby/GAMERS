@@ -3,48 +3,36 @@ using System.Collections.Generic;
 using System.Text;
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using Dapper;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace GAMERS_TECH
 {
     public class PersonnelInfoViewModel
     {
-        public List<PersonnelData> list { get; private set; }
-
+        public List<PersonnelData> List { get; private set; }
         public PersonnelInfoViewModel()
-        {
-            list = GetData();
+        { 
+            List =  GetData();
 
         }
         public List<PersonnelData> GetData()
         {
-            
-            var person = new List<PersonnelData>();
-            using (MySqlConnection Conn = new MySqlConnection(DBConnection.ConnString))
+            HttpClient client = new HttpClient();
+            var result="";
+            Task.Run(async delegate
             {
-                Conn.Open();
-                string loadstring = "SELECT * FROM bio_data";
-                MySqlCommand cmd = new MySqlCommand(loadstring, Conn);
-                MySqlDataReader rd = cmd.ExecuteReader();
+                var response = await client.GetAsync(Environment.GetEnvironmentVariable("GamersServerUri")+"/personnelinfo");
+                result = await response.Content.ReadAsStringAsync();
+            });
 
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        person.Add(new PersonnelData
-                        {
-                            Name = $"Name: {rd[1].ToString()} {rd[2].ToString()} {rd[3].ToString()}",
-                            Role = $"Role: {rd[4].ToString()}",
-                            Email = $"Email: {rd[8].ToString()}",
-                            Phone = $"Phone: {rd[6].ToString()}",
-                            Filepath = "pack://application:,,,/Resources/avatar2.png"
+            var person = JsonConvert.DeserializeObject<List<PersonnelData>>(result) ?? null ;
 
-                        });
-                    }
-                }
-            }
-
-            
             return person;
         }
+        
     }
 }

@@ -19,5 +19,20 @@ namespace GAMERS_TECH
         {
             InitializeComponent();
         }
+        int trigger = 0;
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            
+            if(trigger == 0)
+            {
+                filter.Visibility = Visibility.Visible;
+                trigger = 1;
+            }
+            else
+            {
+                filter.Visibility = Visibility.Collapsed;
+                trigger = 0;
+            }
+        }
     }
 }
